@@ -1,0 +1,38 @@
+// 淡入动画
+.fadein {
+    animation: fadeInAnimation ease 1.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+// 淡出动画
+.fadeout {
+    animation: fadeOutAnimation ease 1.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeOutAnimation {
+    0% {
+        opacity: 1;
+    }
+
+    99% {
+        opacity: 0;
+    }
+
+    100% {
+        display: none;
+        opacity: 0;
+    }
+}

@@ -1,0 +1,42 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+// 信息显示标题
+.title {
+    width: 70%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    // margin-left: 20px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(to right, #1a7ac4, rgba(0, 0, 0, 0));
+    border-image-slice: 10;
+    // border-top: 1px solid #1a7ac4 linear-gradient(to right, #1a7ac4, #000);
+    // linear-gradient(to top, #F80, #2ED);
+
+    // background-image: linear-gradient(to right, #143f78, #1a0a4b)
+    // background-color:transparent;
+    &::before {
+        clear: both;
+        content: "";
+        display: block;
+        width: 3px;
+        height: 30px;
+        background-color: #1a7ac4;
+        margin-right: 15px;
+        box-shadow: 5px 0px 10px #379eec;
+    }
+}
+
+// 居中
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

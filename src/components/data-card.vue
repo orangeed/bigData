@@ -1,10 +1,17 @@
 <!-- 卡片 -->
 <template>
   <div id="card">
-    <p>单位名称：{{ info.unitName }}</p>
-    <p>单位地址：{{ info.address }}</p>
-    <p>单位负责人：{{ info.contactName }}</p>
-    <p>联系方式：{{ info.contactPhone }}</p>
+    <div v-if="info.unitName">
+      <p>单位名称：{{ info.unitName }}</p>
+      <p>单位地址：{{ info.address }}</p>
+      <p>单位负责人：{{ info.contactName }}</p>
+      <p>联系方式：{{ info.contactPhone }}</p>
+    </div>
+    <div v-if="info.equipmentNo">
+      <p>设备序列号：{{ info.equipmentNo }}</p>
+      <p>柜子类型：{{ info.cabinetName }}</p>
+      <p>柜子序列号：{{ info.cabinetNo }}</p>
+    </div>
   </div>
 </template>
 

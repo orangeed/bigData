@@ -75,8 +75,10 @@ export default {
 
 <style scoped lang="scss">
 #notice {
-  width: 21vw;
-  height: 320px;
+  // width: 21vw;
+  // height: 320px;
+  width: 100%;
+  height: 100%;
   .notice-info {
     margin-top: 20px;
     .notice-info-item {

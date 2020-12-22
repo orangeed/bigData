@@ -16,7 +16,11 @@
           </div>
         </div>
         <div class="unitInfo">
-          <div class="unitInfo-left">
+          <div
+            class="unitInfo-left"
+            style="cursor: pointer;"
+            @click="showError"
+          >
             <p class="center">设备异常量</p>
             <dv-digital-flop :config="config2" style="height: 50px;" />
           </div>
@@ -34,7 +38,11 @@
     <div class="type">
       <div class="title">设备类型信息</div>
       <div class="ring">
-        <ve-ring :data="chartData" :settings="chartSettings"></ve-ring>
+        <ve-ring
+          :data="chartData"
+          :settings="chartSettings"
+          :legend="legend"
+        ></ve-ring>
       </div>
     </div>
     <div class="notice">
@@ -103,11 +111,15 @@ export default {
       chartSettings: {
         radius: [50, 100],
         offsetY: 150,
-        legend: {
-          textStyle: {
-            color: "red",
-          },
+      },
+      // 图配配置
+      legend: {
+        // 文字颜色
+        textStyle: {
+          color: "#fff",
         },
+        // 图例关闭时候的颜色
+        inactiveColor: "#676665",
       },
       chartData: {
         columns: ["类型", "数量"],
@@ -125,7 +137,17 @@ export default {
   created() {},
   mounted() {},
   watch: {},
-  methods: {},
+  methods: {
+    // 显示异常设备信息
+    showError() {
+      const showErrorTable = this.$store.getters.showErrorTable;
+      if (showErrorTable) {
+        this.$store.commit("SET_SHOWERRORTABLE", false);
+        return;
+      }
+      this.$store.commit("SET_SHOWERRORTABLE", true);
+    },
+  },
   components: { notice },
 };
 </script>
@@ -134,13 +156,13 @@ export default {
 .right-info {
   margin-left: 20px;
   width: 80%;
+  position: relative;
   .first-info {
     margin: 20px 0px 0px 0px;
     .unitInfo {
       display: flex;
       justify-content: center;
       align-items: center;
-
       .unitInfo-left {
         flex: 1;
       }

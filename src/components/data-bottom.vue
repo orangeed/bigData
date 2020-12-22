@@ -14,6 +14,7 @@
       :x-axis="xAxis"
       height="300px"
       :settings="chartSettings"
+      :legend="legend"
     ></ve-histogram>
   </div>
 </template>
@@ -63,6 +64,15 @@ export default {
           ],
         },
       ],
+      // 图配配置
+      legend: {
+        // 文字颜色
+        textStyle: {
+          color: "#fff",
+        },
+        // 图例关闭时候的颜色
+        inactiveColor: "#676665",
+      },
       chartData: {
         columns: ["日期", "设备注册量", "单位注册量"],
         rows: [
@@ -96,6 +106,7 @@ export default {
   // height: 400px;
   // width: 600px;
   // height: 30%;
-  width: 50vw;
+  // width: 50vw;
+  width: 100%;
 }
 </style>

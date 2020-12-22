@@ -8,7 +8,17 @@ import { citys } from "../utils/city.js";
 
 export default {
   props: {
-    reContry: Boolean, // 父组件带有一个返回全国的操作按钮控制
+    // 父组件带有一个返回全国的操作按钮控制
+    reContry: {
+      type: Boolean,
+      default: false,
+    },
+    position: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -20,6 +30,7 @@ export default {
       aReContry: this.reContry,
       mask: null,
       marker: null,
+      isChange: false,
     };
   },
   mounted() {
@@ -37,12 +48,13 @@ export default {
 
     this.drawArea();
     this.seaPoint();
+    console.log("map-position", this.position);
   },
   methods: {
     // 加载地图事件
     drawArea() {
       AMapUI.load(
-        ["ui/geo/DistrictExplorer", "lib/$"],
+        ["ui/geo/DistrictExplorer", "lib/$", "ui/misc/PointSimplifier"],
         (DistrictExplorer, $) => {
           // 创建一个实例
           this.districtExplorer = new DistrictExplorer({
@@ -78,11 +90,12 @@ export default {
             //  if (props.level === "province") {
             // 只下钻到省一级 （省：province，市：city，县：district）
             // 若是下钻到县一级，那么这个if判断就可以注释掉
-            this.switch2AreaNode(props.adcode);
+            console.log("props", props);
+            this.switch2AreaNode(props.adcode, 0, 0, props.level);
             this.aReContry = false;
             this.showAreaInfo();
-            console.log("props.level", props.level);
-            // if (props.level === "province") {
+            this.$store.commit("SET_SHOWERRORTABLE", false);
+            // if (props.level === "district") {
             // }
           });
           // 全国
@@ -109,12 +122,14 @@ export default {
       );
       polys.forEach((elemnt) => {
         elemnt.setOptions({
-          fillOpacity: isHover ? 0.5 : 0,
+          fillOpacity: isHover ? 1 : 0,
         });
       });
     },
     // 绘制某个区域的边界
-    renderAreaPolygons(areaNode) {
+    renderAreaPolygons(areaNode, level) {
+      // console.log("areaNode", areaNode);
+      console.log("level", level);
       // 更新地图视野
       if (!this.aReContry) {
         this.amap.setBounds(areaNode.getBounds(), null, null, true);
@@ -126,13 +141,17 @@ export default {
       this.districtExplorer.clearFeaturePolygons();
       // 绘制子区域
       this.districtExplorer.renderSubFeatures(areaNode, () => {
+        // var fillColor = colors[i % colors.length];
+        // var strokeColor = colors[colors.length - 1 - (i % colors.length)];
         return {
           cursor: "default",
-          bubble: true,
+          // bubble: true,
           strokeColor: "#fff", // 线颜色
           strokeOpacity: 0.4, // 线透明度
           strokeWeight: 1, // 线宽
           fillOpacity: 0, // 填充透明度
+          fillColor: "#00c1fc", // 填充子区域的背景色
+          // 66edff
         };
       });
       // 绘制父区域
@@ -140,20 +159,24 @@ export default {
         cursor: "default",
         bubble: true,
         strokeColor: "#fff", // 线颜色
-        strokeOpacity: 1, // 线透明度
+        strokeOpacity: areaNode.adcode == "100000" ? 0 : 1, // 线透明度
         strokeWeight: 1, // 线宽
-        fillOpacity: 0, // 填充透明度
+        fillOpacity: level !== "district" ? 0.5 : 0, // 填充透明度
+        fillColor: "#006996",
+        // fillColor: "#00b7ff",
       });
     },
     // 切换区域后刷新显示内容
-    refreshAreaNode(areaNode) {
-      console.log("areaNode", areaNode);
+    refreshAreaNode(areaNode, level) {
+      // console.log("areaNode", areaNode);
+      console.log("refreshAreaNode", level);
       this.districtExplorer.setHoverFeature(null);
-      this.renderAreaPolygons(areaNode);
+      this.renderAreaPolygons(areaNode, level);
     },
     // 切换区域
-    switch2AreaNode(adcode, callback) {
-      console.log("adcode", adcode);
+    switch2AreaNode(adcode, lat, lng, level, callback) {
+      // console.log("adcode", adcode);
+      console.log("switch2AreaNode", adcode, lat, lng, level);
       if (
         this.currentAreaNode &&
         "" + this.currentAreaNode.getAdcode() === "" + adcode
@@ -170,7 +193,11 @@ export default {
         this.currentAreaNode = areaNode;
         // 设置当前使用的定位用节点
         this.districtExplorer.setAreaNodesForLocating([this.currentAreaNode]);
-        this.refreshAreaNode(areaNode);
+        this.refreshAreaNode(areaNode, level);
+        if (this.isChange) {
+          this.amap.setZoomAndCenter(20, [lat, lng]);
+          this.isChange = false;
+        }
         if (callback) {
           callback(null, areaNode);
         }
@@ -208,19 +235,7 @@ export default {
             lat: city.lnglat.lat,
             lng: city.lnglat.lng,
           };
-          const unitData = {
-            unitName: "杭州市第一高级中学",
-            address: "浙江省杭州市萧山区xxxxx路",
-            contactName: "李振华",
-            contactPhone: "18858490700",
-          };
-          this.$emit("jinwei", unitData);
-          const cabinet = {
-            equipmentNo: "30000007",
-            cabinetName: "迷你型",
-            cabinetNo: "GX000-1608016637972756089",
-          };
-          this.$emit("cabinet", cabinet);
+          this.searchPoint();
           this.$store.commit("SET_CARDSHOW", true);
           this.$store.commit("SET_NATIONWIDE", true);
         });
@@ -232,6 +247,23 @@ export default {
       console.log(" 两边的信息消失，展示区域信息，以及全国汇总信息");
       this.$store.commit("SET_NATIONWIDE", true);
     },
+    // 通过经纬度查询点位的信息
+    searchPoint(val) {
+      console.log(val);
+      const unitData = {
+        unitName: "杭州市第一高级中学",
+        address: "浙江省杭州市萧山区xxxxx路",
+        contactName: "李振华",
+        contactPhone: "18858490700",
+      };
+      this.$emit("jinwei", unitData);
+      const cabinet = {
+        equipmentNo: "30000007",
+        cabinetName: "迷你型",
+        cabinetNo: "GX000-1608016637972756089",
+      };
+      this.$emit("cabinet", cabinet);
+    },
   },
   watch: {
     reContry(val) {
@@ -240,6 +272,28 @@ export default {
       this.$store.commit("SET_NATIONWIDE", false);
       this.$store.commit("SET_CARDSHOW", false);
     },
+    position(val) {
+      /**
+       * 定位到点位所在市区和定位到点位有冲突，不能同步，只能异步
+       */
+      this.isChange = true;
+      // 经度
+      const lat = Number(val[4].split(",")[0].trim());
+      // 纬度
+      const lng = Number(val[4].split(",")[1].trim());
+      this.$store.commit("SET_CARDSHOW", true);
+      this.$store.commit("SET_NATIONWIDE", true);
+      this.$store.commit("SET_SHOWERRORTABLE", false);
+      const data = {
+        lat,
+        lng,
+      };
+      this.searchPoint(data);
+      // 定位到点位的所在市区
+      this.switch2AreaNode(330104, lat, lng);
+      // 同时设置地图层级与中心点，定位到点位
+      // this.amap.setZoomAndCenter(20, [lat, lng]);
+    },
   },
 };
 </script>
@@ -247,4 +301,8 @@ export default {
 <style lang="scss">
 // @import "../style/middle-map.scss";
 @import "../style/background-map.scss";
+h1 {
+  color: #00c1fc;
+  color: #006996;
+}
 </style>

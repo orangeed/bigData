@@ -1,6 +1,6 @@
 <!-- 异常设备信息表格 -->
 <template>
-  <div id="errorTable">
+  <div id="errorTable" class="fadein">
     <dv-scroll-board :config="config" class="scrollTable" @click="clickRow" />
   </div>
 </template>
@@ -25,12 +25,28 @@ export default {
           ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.685045, 29.797437"],
           ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.044276, 29.604177"],
           ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
+          ["杭州第一高级中学", "浙江省杭州市", "坏了", "119.279089, 29.472284"],
         ],
         index: true,
+        indexHeader: "序号",
         columnWidth: [50],
         align: ["center"],
-        waitTime: 1000,
+        waitTime: 2000,
         hoverPause: true,
+        rowNum: 13,
+        // headerBGC:
+        //   "linear-gradient(360deg,rgba(247, 147, 30, 0.6) 1%,rgba(247, 147, 30, 0.5) 10%,rgba(247, 147, 30, 0.4) 20%,rgba(247, 147, 30, 0.3) 30%,rgba(247, 147, 30, 0.2) 40%,rgba(247, 147, 30, 0.1) 50%,rgba(247, 147, 30, 0.2) 60%,rgba(247, 147, 30, 0.3) 70%,rgba(247, 147, 30, 0.4) 80%,rgba(247, 147, 30, 0.5) 90%,rgba(247, 147, 30, 0.6) 99%",
       },
     };
   },
@@ -40,7 +56,7 @@ export default {
   watch: {},
   methods: {
     clickRow(val) {
-      console.log(val);
+      console.log('11111',val);
       // alert(JSON.stringify(val));
       this.$emit("position", val);
     },
@@ -53,8 +69,16 @@ export default {
 #errorTable {
   background-color: rgba(161, 161, 161, 0.1);
   .scrollTable {
-    width: 500px;
-    height: 220px;
+    width: 860px;
+    height: 520px;
+    // height: 100%;
+    // border-image: url("../assets/logo.png") 30 30 round;
+    border: 20px solid transparent;
+    border-radius: 10px;
+    // padding: 20px;
+    border-image: url("../assets/border/3/3_18.png") 20;
+    padding-bottom: 20px;
   }
 }
+
 </style>

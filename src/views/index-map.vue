@@ -11,12 +11,14 @@
           :position="positionInfo"
         />
         <div class="top"><top /></div>
+        <!-- 左边信息 -->
         <div
           :class="!$store.getters.nationwide ? 'fadein left' : 'fadeout left'"
           v-show="!$store.getters.nationwide"
         >
           <left />
         </div>
+        <!-- 底部数据统计 -->
         <div
           :class="
             !$store.getters.nationwide ? 'fadein bottom' : 'fadeout bottom'
@@ -25,34 +27,37 @@
         >
           <bottom />
         </div>
+        <!-- 省市区头部展示数据 -->
         <div
           :class="
             $store.getters.nationwide
-              ? 'fadein nationwide'
+              ? 'fadein pro-title'
               : 'fadeout nationwide'
           "
           v-show="$store.getters.nationwide"
         >
-          <nationwide />
+          <proTitle />
         </div>
+        <!-- 右边展示信息 -->
         <div
           class="right"
           :class="!$store.getters.nationwide ? 'fadein' : 'fadeout'"
           v-show="!$store.getters.nationwide"
         >
           <right />
-          <button class="btn" @click="returnCountry">返回全国</button>
+          <!-- <button class="btn" @click="returnCountry">返回全国</button>
           <button class="changeModuleOptions" @click="changeModuleOptions">
             选择展示项
-          </button>
+          </button> -->
         </div>
-        <button
+        <!-- <button
           class="returnCountry"
           @click="returnCountry"
           v-show="$store.getters.nationwide"
         >
           返回全国
-        </button>
+        </button> -->
+        <!-- 单位信息的卡片 -->
         <div
           :class="
             $store.getters.cardShow ? 'fadein unit-card' : 'fadeout unit-card'
@@ -61,6 +66,7 @@
         >
           <card :info="info" />
         </div>
+        <!-- 设备信息的卡片 -->
         <div
           :class="
             $store.getters.cardShow
@@ -74,11 +80,35 @@
         <!-- 设备异常信息表格 -->
         <errorTable
           class="errorTable"
-          v-if="$store.getters.showErrorTable"
+          v-show="$store.getters.showErrorTable"
           @position="position"
         />
         <!-- 展示项选择面板 -->
-        <moduleOptions v-if="$store.getters.showModuleOptions" />
+        <moduleOptions
+          :class="
+            $store.getters.showModuleOptions
+              ? 'moduleOptions fadein'
+              : 'moduleOptions fadeout'
+          "
+          v-show="$store.getters.showModuleOptions"
+        />
+        <!-- 首页展示的设备基本信息 -->
+        <indexNationWide
+          class="nationwide fadein"
+          v-show="!$store.getters.nationwide"
+          @returnCountry="returnCountry"
+        />
+        <!-- 按钮 -->
+        <div class="btn-grounp">
+          <div class="btn" @click="returnCountry">返回全国</div>
+          <div
+            v-show="!$store.getters.nationwide"
+            class="changeModuleOptions"
+            @click="changeModuleOptions"
+          >
+            选择展示项
+          </div>
+        </div>
       </div>
     </dv-full-screen-container>
   </div>
@@ -92,10 +122,11 @@ import right from "@/components/data-right.vue";
 import bottom from "@/components/data-bottom.vue";
 import notice from "@/components/data-notice.vue";
 import chinaMap from "@/components/data-chinaMap.vue";
-import nationwide from "../components/data-nationwide.vue";
+import proTitle from "../components/data-proTitle.vue";
 import card from "../components/data-card.vue";
 import errorTable from "../components/data-errorTable.vue";
 import moduleOptions from "../components/data-moduleOptions.vue";
+import indexNationWide from "../components/data-indexNationWide.vue";
 
 export default {
   props: {},
@@ -117,7 +148,9 @@ export default {
   mounted() {},
   watch: {},
   methods: {
-    returnCountry() {
+    returnCountry(val) {
+      // console.log(val);
+      // this.reContry = val
       this.reContry = true;
       setTimeout(() => {
         this.reContry = false;
@@ -154,10 +187,11 @@ export default {
     bottom,
     notice,
     chinaMap,
-    nationwide,
+    proTitle,
     card,
     errorTable,
     moduleOptions,
+    indexNationWide,
   },
 };
 </script>
@@ -178,13 +212,14 @@ export default {
     flex-direction: column;
     .bgmap {
       position: relative;
-      display: flex;
+      // display: flex;
       .left {
         position: absolute;
         flex: 1;
+        min-width: 27%;
         height: calc(100vh - 40px);
-        left: 0;
-        top: 5%;
+        // left: 0;
+        top: 3%;
       }
       .top {
         position: absolute;
@@ -193,17 +228,20 @@ export default {
       }
       .bottom {
         position: absolute;
-        transform: translateX(50%);
+        transform: translateX(52%);
         // flex: 1;
         width: 50%;
-        bottom: -50px;
+        bottom: 4px;
+        // bottom: -50px;
       }
       .right {
         position: absolute;
         height: calc(100vh - 40px);
-        flex: 1;
-        right: -60px;
-        top: 5%;
+        // flex: 1;
+        // right: -60px;
+        right: 30px;
+        top: 3%;
+        z-index: 2;
       }
       .right-botton {
         position: absolute;
@@ -212,31 +250,59 @@ export default {
         bottom: -40px;
         flex: 1;
       }
-      .btn {
+      .btn-grounp {
         position: absolute;
-        bottom: 16px;
-        right: 390px;
-        margin: -60px 0px 30px 30px;
-        // margin-left: 30px;
-        height: 30px;
-        width: 100px;
-        background-color: $color-btn;
-        color: $color-white;
-        border: none;
-        border-radius: 30px;
-        outline: none;
-        cursor: pointer;
-        &:active {
-          background-color: $color-orange;
+        top: 0;
+        right: 0;
+        .btn {
+          position: absolute;
+          // display: flex;
+          // flex-direction: column;
+          // float: ;
+          // bottom: 16px;
+          // right: 400px;
+          right: 25vw;
+          // top: 200px;
+          top: 100px;
+          // margin: -60px 0px 30px 30px;
+          // margin-left: 30px;
+          height: 38px;
+          width: 92px;
+          // width: 100%;
+          // height: 100%;
+          // background-color: $color-btn;
+          background-image: url("../assets/border/2/2_04.png");
+          color: $color-white;
+          border: none;
+          // border-radius: 30px;
+          outline: none;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          // &:active {
+          //   background-color: $color-orange;
+          // }
         }
       }
+
       .changeModuleOptions {
         @extend .btn;
-        right: 200px;
+        background-image: url("../assets/border/2/2_23.png") !important;
+        top: 160px !important;
       }
       .nationwide {
         position: absolute;
-        top: 10%;
+        top: 8%;
+        width: 100%;
+        // transform: translateX(155%);
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+      }
+      .pro-title {
+        @extend .nationwide;
+        transform: translateX(155%);
       }
       .returnCountry {
         // position: absolute;
@@ -262,8 +328,18 @@ export default {
       }
       .errorTable {
         position: absolute;
-        top: calc(50% - 400px);
-        left: calc(50% - 100px);
+        top: 0;
+        left: 0;
+        transform: translate(57%, 40%);
+        // top: calc(50% - 400px);
+        // left: calc(50% - 100px);
+      }
+      .moduleOptions {
+        position: absolute;
+        top: 0;
+        width: 660px;
+        height: 460px;
+        transform: translate(90%, 62%);
       }
     }
   }

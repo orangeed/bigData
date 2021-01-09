@@ -15,3 +15,44 @@
 .info {
     color: $color-info;
 }
+
+.text1 {
+    color: $color-text1;
+}
+
+// 弹窗背景透明色
+.bg-tra {
+    background-color: rgba(87, 87, 87, 0.5);
+    // background-color: rgba(14, 125, 199, 0.5);
+}
+
+// 通用背景色
+.bg-ligra {
+    background: linear-gradient(360deg,
+            rgba(0, 255, 255, 0.15) 0%,
+            rgba(0, 255, 255, 0.14) 2%,
+            rgba(0, 255, 255, 0.12) 7%,
+            rgba(0, 255, 255, 0.10) 12%,
+            rgba(0, 255, 255, 0.08) 18%,
+            rgba(0, 255, 255, 0.06) 24%,
+            rgba(0, 255, 255, 0.04) 31%,
+            rgba(0, 255, 255, 0.01) 39%,
+            rgba(0, 255, 255, 0) 52%,
+            rgba(0, 255, 255, 0.01) 60%,
+            rgba(0, 255, 255, 0.02) 67%,
+            rgba(0, 255, 255, 0.04) 73%,
+            rgba(0, 255, 255, 0.06) 78%,
+            rgba(0, 255, 255, 0.08) 84%,
+            rgba(0, 255, 255, 0.10) 89%,
+            rgba(0, 255, 255, 0.12) 94%,
+            rgba(0, 255, 255, 0.14) 99%);
+    ;
+}
+
+.blue {
+    color: $color-blue;
+}
+
+.danger {
+    color: $color-danger;
+}

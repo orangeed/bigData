@@ -2,42 +2,106 @@
 <template>
   <div class="left-info">
     <!-- 单位统计信息 -->
-    <div>
-      <div class="title">单位统计信息</div>
-      <dv-border-box-8 class="first-info" :dur="10">
-        <div class="unitInfo">
-          <div class="unitInfo-left">
-            <p class="center">单位总数</p>
-            <dv-digital-flop :config="config" style="height: 50px" />
+    <div
+      v-if="$store.getters.moduleOptions.unitStatistics"
+      class="unit-info transition"
+    >
+      <!-- <div class="title">单位统计信息</div> -->
+      <div class="title-new">
+        <span class="title-new-bg">单位统计信息</span>
+      </div>
+      <!-- <dv-border-box-8 class="first-info" :dur="10"> -->
+      <div class="first-info">
+        <div class="bg-ligra bg-round" style="margin-bottom:2px">
+          <div>
+            <p
+              class="center"
+              style="font-size:14px;padding:10px 0px 10px 0;margin:0px"
+            >
+              单位总数(个)
+            </p>
+            <dv-digital-flop
+              :config="config"
+              style="height: 30px;"
+              rowGap="0"
+            />
+          </div>
+          <div class="unitInfo">
+            <div class="unitInfo-left">
+              <p class="center" style="font-size:14px">待激活单位总数(个)</p>
+              <dv-digital-flop
+                :config="config1"
+                style="height: 30px"
+                rowGap="0"
+              />
+            </div>
+            <div class="unitInfo-right">
+              <p class="center" style="font-size:14px">已激活单位总数(个)</p>
+              <dv-digital-flop
+                :config="config2"
+                style="height: 30px"
+                rowGap="0"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="unitInfo-left">
+            <p class="center" style="font-size:14px">单位总数</p>
+            <dv-digital-flop :config="config" style="height: 30px" rowGap="0" />
           </div>
           <div class="unitInfo-right">
-            <p class="center">待激活单位总数</p>
-            <dv-digital-flop :config="config1" style="height: 50px" />
+            <p class="center" style="font-size:14px">待激活单位总数</p>
+            <dv-digital-flop
+              :config="config1"
+              style="height: 30px"
+              rowGap="0"
+            />
           </div>
         </div>
         <div>
-          <p class="center">已激活单位总数</p>
-          <dv-digital-flop :config="config2" style="height: 50px" />
-        </div>
-      </dv-border-box-8>
+          <p class="center" style="font-size:14px">已激活单位总数</p>
+          <dv-digital-flop :config="config2" style="height: 50px" rowGap="0" />
+        </div> -->
+      </div>
+
+      <!-- </dv-border-box-8> -->
     </div>
 
     <!-- 省份单位数量统计 -->
-    <div class="provincial">
-      <div class="title">省份单位数量统计</div>
-
+    <div
+      class="provincial transition"
+      v-if="$store.getters.moduleOptions.unitStatisticsRannking"
+    >
+      <div class="title-new">
+        <span class="title-new-bg">省份单位数量统计</span>
+      </div>
+      <!-- <div class="title">省份单位数量统计</div> -->
       <div class="provincialBoard">
         <div class="provincialBoard-item">
-          <dv-scroll-ranking-board
-            :config="provincialConfig"
-            style="height: 500px;"
-          />
+          <div class="bg-ligra bg-round" style="padding:10px;margin-bottom:5px">
+            <dv-scroll-ranking-board
+              :config="provincialConfig"
+              style="height: 352px;"
+              @click="clickRow"
+            />
+          </div>
         </div>
       </div>
     </div>
     <!-- 单位激活信息 -->
-    <div class="unitNotice">
+    <div
+      class="unitNotice"
+      v-if="$store.getters.moduleOptions.onlineUnitActivationInfo"
+    >
       <notice title="实时单位激活信息" :isUnit="false" />
+    </div>
+    <!-- 柜子激活信息 -->
+    <div class="notice" v-if="$store.getters.moduleOptions.onlineDeviceInfor">
+      <notice title="实时柜子信息" />
+    </div>
+    <div class="line">
+      <img src="../assets/border/1/line.png" />
     </div>
   </div>
 </template>
@@ -69,6 +133,10 @@ export default {
         number: [1234567893],
         content: "{nt}个",
         formatter,
+        style: {
+          fontSize: 20,
+          fill: "#00FFFF",
+        },
       },
       // 待激活单位总数
       config1: {
@@ -76,7 +144,8 @@ export default {
         content: "{nt}个",
         formatter,
         style: {
-          fill: "#E6A23C",
+          fill: "#3FA9F5",
+          fontSize: 20,
         },
       },
       // 已激活单位总数
@@ -85,7 +154,8 @@ export default {
         content: "{nt}个",
         formatter,
         style: {
-          fill: "#67C23A",
+          fill: "#009245",
+          fontSize: 20,
         },
       },
       // 省份单位数量统计
@@ -145,7 +215,9 @@ export default {
           },
         ],
         unit: "个",
-        rowNum: 10,
+        rowNum: 8,
+        waitTime: 2000,
+        hoverPause: true,
         valueFormatter({ value }) {
           const numbers = value
             .toString()
@@ -166,7 +238,13 @@ export default {
   created() {},
   mounted() {},
   watch: {},
-  methods: {},
+  methods: {
+    clickRow(val) {
+      // alert(1)
+      console.log(val);
+      console.log(111111);
+    },
+  },
   components: { notice },
 };
 </script>
@@ -175,48 +253,97 @@ export default {
 .left-info {
   margin-left: 20px;
   width: 80%;
-  .first-info {
-    margin: 20px 0px 0px 0px;
-    .unitInfo {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .unitInfo-left {
-        flex: 1;
-      }
-      .unitInfo-right {
-        flex: 1;
-      }
-    }
-  }
-}
-.provincial {
-  margin-top: 30px;
-  width: 100%;
-  min-height: 530px;
-  height: 100%;
-  background-color: rgba(161, 161, 161, 0.1);
-  // background-color: rgba(77, 76, 76, 0.5);
-
-  .provincialBoard {
-    // width: 400px;
-    // width: 100%;
+  .unit-info {
     position: relative;
-    .provincialBoard-item {
-      // margin: 0 auto;
-      position: absolute;
-      width: 90%;
-      transform: translateX(5%);
-      // width: 100%;
+    // height: 80%;
+    // width: 80%;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // height: 120px;
+    .first-info {
+      margin: 20px 0px 0px 0px;
+      border: 30px solid transparent;
+      border-image: url("../assets/border/1/left_01.png") 30;
 
-      // display: flex;
-      // justify-content: center;
-      // align-items: center;
+      .unitInfo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .unitInfo-left {
+          flex: 1;
+        }
+        .unitInfo-right {
+          flex: 1;
+        }
+      }
     }
   }
+
+  .provincial {
+    margin-top: 10px;
+    // width: 98%;
+    width: 100%;
+    min-height: 392px;
+    height: 100%;
+    // background-color: rgba(161, 161, 161, 0.1);
+    position: relative;
+    .provincialBoard {
+      border: 30px solid transparent;
+      border-image: url("../assets/border/1/left_02.png") 30;
+      .provincialBoard-item {
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        // flex: 1;
+        // width: 100%;
+        // border: 30px solid transparent;
+        // border-image: url("../assets/border/1/left_02.png") 30;
+        // position: absolute;
+        // width: 90%;
+        // transform: translateX(5%);
+        // // 排名轮播表外面的柱状图
+        // .dv-scroll-ranking-board .ranking-column {
+        //   background-color: #00444c !important;
+        //   border: none !important;
+        //   border-radius: 1px;
+        // }
+        // // 排名轮播表里面的柱状图
+        // .dv-scroll-ranking-board .ranking-column .inside-column {
+        //   background-color: rgba(0, 255, 255, 0.3);
+        //   border-radius: 1px;
+        // }
+      }
+    }
+  }
+  .unitNotice {
+    margin-top: -10px;
+  }
+  .notice {
+    margin-top: -10px;
+  }
+  .line {
+    position: relative;
+    top: -12px;
+    left: 0;
+  }
 }
-.unitNotice {
-  margin-top: 30px;
+// 排名轮播表外面的柱状图
+/deep/.dv-scroll-ranking-board .ranking-column {
+  background-color: #00444c !important;
+  border: none !important;
+  border-radius: 5px;
+}
+// 排名轮播表里面的柱状图
+/deep/.dv-scroll-ranking-board .ranking-column .inside-column {
+  background-color: rgba(0, 255, 255, 0.3) !important;
+  border-radius: 5px !important;
+  padding: 1px 0px 1px 0px !important;
+  height: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/deep/.dv-scroll-ranking-board .ranking-info .rank {
+  color: #fff !important;
 }
 </style>

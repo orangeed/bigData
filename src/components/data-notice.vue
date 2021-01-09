@@ -1,21 +1,27 @@
 <!-- 下方提醒 -->
 <template>
   <div id="notice">
-    <div class="title">{{ title }}</div>
+    <div class="title-new">
+      <span class="title-new-bg">{{ title }}</span>
+    </div>
+    <!-- <div class="title">{{ title }}</div> -->
     <div>
-      <dv-border-box-7 class="notice-info">
+      <!-- <dv-border-box-7 class="notice-info"> -->
+      <div class="notice-info">
         <div
           v-for="(item, index) in isUnit ? noticeInfo : unitInfo"
           :key="index"
           :class="
             item.state === 0
-              ? 'notice-info-item success'
-              : 'notice-info-item error'
+              ? 'notice-info-item bg-ligra success'
+              : 'notice-info-item bg-ligra error'
           "
         >
           {{ item.info }}
         </div>
-      </dv-border-box-7>
+      </div>
+
+      <!-- </dv-border-box-7> -->
     </div>
   </div>
 </template>
@@ -43,14 +49,14 @@ export default {
           state: 1,
           info: "杭州市教育局的迷你型柜子被激活了。",
         },
-        {
-          state: 1,
-          info: "杭州市教育局的迷你型柜子被激活了。",
-        },
-        {
-          state: 0,
-          info: "杭州市教育局的迷你型柜子被激活了。",
-        },
+        // {
+        //   state: 1,
+        //   info: "杭州市教育局的迷你型柜子被激活了。",
+        // },
+        // {
+        //   state: 0,
+        //   info: "杭州市教育局的迷你型柜子被激活了。",
+        // },
       ],
       unitInfo: [
         {
@@ -79,11 +85,21 @@ export default {
   // height: 320px;
   width: 100%;
   height: 100%;
+  position: relative;
   .notice-info {
     margin-top: 20px;
+    border: 30px solid transparent;
+    border-image: url("../assets/border/1/left_03.png") 30;
     .notice-info-item {
-      padding: 10px;
-      line-height: 30px;
+      padding: 8px;
+      margin-bottom: 10px;
+      &:nth-child(1){
+        margin-top: 10px;
+      }
+
+      &:nth-last-child(1) {
+        // margin-bottom: 5px !important;
+      }
     }
   }
 }

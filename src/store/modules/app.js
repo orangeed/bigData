@@ -4,7 +4,22 @@ const app = {
         cardShow: false,
         showErrorTable: false,
         showModuleOptions: false,
-        moduleOptions: {}
+        moduleOptions: {
+            unitStatistics: true,
+            unitStatisticsRannking: true,
+            onlineUnitActivationInfo: true,
+            deviceStatistics: true,
+            deviceTypeInfo: true,
+            onlineDeviceInfor: true,
+            comprehensiveStatistics: true,
+            equipmentAbnormality: true,
+            deviceStatisticsFloat: true,
+            drawersNumber: true,
+            documentOperation: true,
+            cabinetDistributionNumber: true,
+            cabinetDistributionUnit: true,
+            callDistribution: true
+        }
     },
     mutations: {
         SET_NATIONWIDE: (state, nationwide) => {
@@ -16,7 +31,7 @@ const app = {
         SET_SHOWERRORTABLE: (state, showErrorTable) => {
             state.showErrorTable = showErrorTable
         },
-        SET_SHOWMODULEOPTIONS:(state,showModuleOptions)=>{
+        SET_SHOWMODULEOPTIONS: (state, showModuleOptions) => {
             state.showModuleOptions = showModuleOptions
         },
         SET_MODULEOPTIONS: (state, moduleOptions) => {

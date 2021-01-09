@@ -1,6 +1,6 @@
 <!-- 底部 -->
 <template>
-  <div id="bottom">
+  <div id="bottom" v-if="$store.getters.moduleOptions.comprehensiveStatistics">
     <!-- <ve-line
       :x-axis="xAxis"
       :data="chartData"
@@ -8,26 +8,45 @@
       height="300px"
       :settings="chartSettings"
     ></ve-line> -->
-    <ve-histogram
-      :data="chartData"
-      :y-axis="yAxis"
-      :x-axis="xAxis"
-      height="300px"
-      :settings="chartSettings"
-      :legend="legend"
-    ></ve-histogram>
+    <div class="bottom-item">
+      <ve-histogram
+        :data="chartData"
+        :y-axis="yAxis"
+        :x-axis="xAxis"
+        height="206px"
+        :settings="chartSettings"
+        :legend="legend"
+        :grid="grid"
+        :colors="colors"
+        class="histogram bg-ligra bg-round"
+      ></ve-histogram>
+    </div>
   </div>
 </template>
 
 <script>
+import echarts from "echarts/lib/echarts";
 export default {
   props: {},
   data() {
     return {
+      // 柱状图颜色
+      colors: [
+        new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: "#00FFFF" },
+          { offset: 1, color: "#00222B" },
+        ]),
+        new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: "#3FA9F5" },
+          { offset: 1, color: "#052330" },
+        ]),
+      ],
+      // 基本设置
       chartSettings: {
         metrics: ["设备注册量", "单位注册量"],
-        // showLine: ["设备注册量","单位注册量"],
+        silent: false,
       },
+      // Y轴设置
       yAxis: [
         {
           axisLabel: {
@@ -39,6 +58,7 @@ export default {
           },
         },
       ],
+      // X轴设置
       xAxis: [
         {
           type: "category",
@@ -64,6 +84,13 @@ export default {
           ],
         },
       ],
+      // 距离
+      grid: {
+        top: "10%", //距上边距
+        // left: "25%", //距离左边距
+        right: "3%", //距离右边距
+        bottom: "2%", //距离下边距
+      },
       // 图配配置
       legend: {
         // 文字颜色
@@ -72,7 +99,9 @@ export default {
         },
         // 图例关闭时候的颜色
         inactiveColor: "#676665",
+        padding: [0, 0, 10, 0],
       },
+      // 柱状图数据
       chartData: {
         columns: ["日期", "设备注册量", "单位注册量"],
         rows: [
@@ -108,5 +137,20 @@ export default {
   // height: 30%;
   // width: 50vw;
   width: 100%;
+
+  .bottom-item {
+    border: 23px solid transparent;
+    // width: 23px;
+    // height: 23px;
+    border-image: url("../assets/border/1/1_73.png") 23 stretch;
+    height: 200px;
+    // background: url("../assets/border/1/1_73.png") no-repeat;
+    .histogram {
+      margin: -10px 15px 0px 0px;
+      transition: all 0.3s;
+      // height: 200px;
+      color: #5e9494;
+    }
+  }
 }
 </style>

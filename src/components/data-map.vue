@@ -38,8 +38,8 @@ export default {
       mask: this.mask,
       defaultCursor: "pointer",
       center: [103.714129, 38.150339], // 地图中心点
-      zooms: [3, 20],
-      zoom: 8, // 地图显示的缩放级别
+      // zooms: [3, 20],
+      // zoom: 5, // 地图显示的缩放级别
       resizeEnable: true, // 是否监控地图容器尺寸变化
       pitch: 45, // 地图俯仰角度，有效范围 0 度- 83 度
       viewMode: "3D", // 地图模式
@@ -79,6 +79,7 @@ export default {
               );
             }
           );
+
           // 监听鼠标在feature上滑动
           this.districtExplorer.on("featureMousemove", (e) => {
             // 更新提示位置
@@ -95,11 +96,17 @@ export default {
             this.aReContry = false;
             this.showAreaInfo();
             this.$store.commit("SET_SHOWERRORTABLE", false);
+            // this.$store.commit("SET_SHOWMODULEOPTIONS", false);
+            // this.$store.commit("SET_SHOWMODULEOPTIONS", false);
+            this.$store.commit("SET_SHOWMODULEOPTIONS", false);
+
             // if (props.level === "district") {
             // }
           });
+
           // 全国
           this.switch2AreaNode(100000);
+          this.setPrism();
         }
       );
     },
@@ -264,6 +271,61 @@ export default {
       };
       this.$emit("cabinet", cabinet);
     },
+    // 设置地图的棱柱
+    setPrism() {
+      // 设置光照
+      this.amap.AmbientLight = new AMap.Lights.AmbientLight([1, 1, 1], 0.5);
+      this.amap.DirectionLight = new AMap.Lights.DirectionLight(
+        [0, 0, 1],
+        [1, 1, 1],
+        1
+      );
+      var object3Dlayer = new AMap.Object3DLayer();
+      this.amap.add(object3Dlayer);
+      AMap.plugin("AMap.DistrictSearch", () => {
+        new AMap.DistrictSearch({
+          subdistrict: 0, //返回下一级行政区
+          extensions: "all", //返回行政区边界坐标组等具体信息
+          level: "city", //查询行政级别为 市
+        }).search("中国", (status, result) => {
+          const bounds = result.districtList[0].boundaries;
+          const height = 5000;
+          // const color = "#0088ffcc"; // rgba
+          const color = "#00c1fc80";
+          const prism = new AMap.Object3D.Prism({
+            path: bounds,
+            height: height,
+            color: color,
+          });
+
+          prism.transparent = true;
+          object3Dlayer.add(prism);
+
+          const text = new AMap.Text({
+            text:
+              result.districtList[0].name +
+              "</br>(" +
+              result.districtList[0].adcode +
+              ")",
+            verticalAlign: "bottom",
+            position: [116.528261, 39.934313],
+            height: 5000,
+            style: {
+              "background-color": "transparent",
+              "-webkit-text-stroke": "red",
+              "-webkit-text-stroke-width": "0.5px",
+              "text-align": "center",
+              border: "none",
+              color: "white",
+              "font-size": "24px",
+              "font-weight": 600,
+            },
+          });
+
+          text.setMap(this.amap);
+        });
+      });
+    },
   },
   watch: {
     reContry(val) {
@@ -301,8 +363,8 @@ export default {
 <style lang="scss">
 // @import "../style/middle-map.scss";
 @import "../style/background-map.scss";
-h1 {
-  color: #00c1fc;
-  color: #006996;
-}
+// h1 {
+//   color: #00c1fc80;
+//   color: rgb(0, 105, 150);
+// }
 </style>

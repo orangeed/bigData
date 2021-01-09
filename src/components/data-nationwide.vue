@@ -1,7 +1,7 @@
 <!-- 全国信息展示头部 -->
 <template>
   <div id="nationwide">
-    <div class="nationwide-info">
+    <div class="nationwide-info bg-tra">
       <div class="nationwide-info-item">
         <p class="nationwide-info-item-title orange">设备总量</p>
         <p class="nationwide-info-item-num info">{{ totalNum.equipmentAll }}</p>
@@ -50,10 +50,10 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
+
   .nationwide-info {
     display: flex;
     padding: 0px 50px 0px 50px;
-    background-color: rgba(87, 87, 87, 0.5);
     box-shadow: 0px 10px 10px rgba(131, 129, 129, 0.562);
     .nationwide-info-item {
       text-align: center;

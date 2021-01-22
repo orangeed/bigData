@@ -129,7 +129,7 @@ export default {
     img {
       position: absolute;
       bottom: 0px;
-      right: 0px;
+      right: 10px;
       top: 0px;
     }
   }

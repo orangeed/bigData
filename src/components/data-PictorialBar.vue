@@ -9,7 +9,7 @@
       <div
         ref="drawerStatus"
         class="bg-ligra bg-round"
-        style="width:100%;height:160px;margin:0 auto;margin-top:10px"
+        style="width:100%;height:160px;margin:0 auto;margin-top:10px;"
       ></div>
     </div>
   </div>
@@ -118,7 +118,7 @@ export default {
               normal: {
                 show: true,
                 position: "right",
-                offset: [0, -10],
+                offset: [-20, -10],
                 textStyle: {
                   fontSize: 16,
                 },
@@ -136,12 +136,12 @@ export default {
             // barGap: "30%",
             // 是否开启 hover 在图形上的提示动画效果
             hoverAnimation: true,
-            color: "#00FFFF",
+            color: "#3FA9F5",
             // 图形偏移量
-            symbolOffset: [0, -10],
+            symbolOffset: [-20, -10],
             data: [
               {
-                value: 157,
+                value: 10000,
                 symbol: pathSymbols.reindeer,
               },
             ],
@@ -168,11 +168,11 @@ export default {
             symbolSize: ["200%", "200%"],
             // 是否开启 hover 在图形上的提示动画效果
             hoverAnimation: true,
-            color: "#3FA9F5",
-            symbolOffset: [0, 15],
+            color: "#00FFFF",
+            symbolOffset: [-20, 15],
             data: [
               {
-                value: 184,
+                value: 8000,
                 symbol: pathSymbols.reindeer,
 
                 // itemStyle:{
@@ -191,7 +191,7 @@ export default {
               normal: {
                 show: true,
                 position: "right",
-                offset: [-10, 40],
+                offset: [0, 40],
                 textStyle: {
                   fontSize: 16,
                 },
@@ -204,10 +204,10 @@ export default {
             // 是否开启 hover 在图形上的提示动画效果
             hoverAnimation: true,
             color: "#F7931E",
-            symbolOffset: [0, 40],
+            symbolOffset: [-20, 40],
             data: [
               {
-                value: 184,
+                value: 100,
                 symbol: pathSymbols.reindeer,
                 // symbolOffset: [0, 10],
               },

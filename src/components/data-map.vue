@@ -1,10 +1,23 @@
+<!-- 高德地图 -->
 <template>
-  <div id="container" />
+  <div id="container" ref="container" />
 </template>
 <script>
 import AMap from "AMap";
 import AMapUI from "AMapUI";
+// import echarts from "echarts/lib/echarts";
+// import echarts from 'echarts'
+// import 'echarts-gl'
+// 引入柱状图
+// import 'echarts/lib/chart/bar';
+// // 引入提示框和标题组件
+// import 'echarts/lib/component/tooltip';
+// import 'echarts/lib/component/title';
+
 import { citys } from "../utils/city.js";
+import { province } from "../utils/province.js";
+import { heatGrid } from "../utils/gard.js";
+import { openInfoWin } from "../utils/utils.js";
 
 export default {
   props: {
@@ -28,27 +41,33 @@ export default {
       $tipMarkerContent: null,
       currentAreaNode: null,
       aReContry: this.reContry,
-      mask: null,
       marker: null,
       isChange: false,
+      layer: null,
+      loca: null,
+      object3Dlayer: new AMap.Object3DLayer(),
+      prism: null,
     };
   },
   mounted() {
     this.amap = new AMap.Map("container", {
-      mask: this.mask,
       defaultCursor: "pointer",
-      center: [103.714129, 38.150339], // 地图中心点
-      // zooms: [3, 20],
+      center: [107.4, 35.42], // 地图中心点
+      zooms: [3, 20],
       // zoom: 5, // 地图显示的缩放级别
       resizeEnable: true, // 是否监控地图容器尺寸变化
-      pitch: 45, // 地图俯仰角度，有效范围 0 度- 83 度
+      pitch: 60, // 地图俯仰角度，有效范围 0 度- 83 度
       viewMode: "3D", // 地图模式
       mapStyle: "amap://styles/5b59f9b29bb6261d416ce7b61509c972", // 地图样式
     });
-
+    /**
+     * 使用1.2.0版本的loca的时候需要自建一个底
+     */
+    // this.loca = Loca.create(this.amap);
     this.drawArea();
-    this.seaPoint();
-    console.log("map-position", this.position);
+
+    // this.setHistogramEcharts()
+    // console.log("heatGrid", heatGrid);
   },
   methods: {
     // 加载地图事件
@@ -99,14 +118,21 @@ export default {
             // this.$store.commit("SET_SHOWMODULEOPTIONS", false);
             // this.$store.commit("SET_SHOWMODULEOPTIONS", false);
             this.$store.commit("SET_SHOWMODULEOPTIONS", false);
-
-            // if (props.level === "district") {
-            // }
+            this.$store.commit("SET_ERRORDETAILS", false);
+            this.layer.setMap(null);
+            this.seaPoint();
+            this.object3Dlayer.remove(this.prism);
+            this.setPrism(props);
           });
 
           // 全国
           this.switch2AreaNode(100000);
           this.setPrism();
+          this.setHistogram();
+          // setTimeout(() => {
+          //   this.setHistogram();
+          //   // this.setHistogramEcharts();
+          // }, 4000);
         }
       );
     },
@@ -209,6 +235,7 @@ export default {
           callback(null, areaNode);
         }
       });
+      // this.setPrism(level);
     },
     // 加载区域
     loadAreaNode(adcode, callback) {
@@ -225,13 +252,15 @@ export default {
         }
       });
     },
-    // 点坐标
+    // 点标记
     seaPoint() {
       for (let index = 0; index < citys.length; index++) {
         const city = citys[index];
         this.marker = new AMap.Marker({
           position: city.lnglat, // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
           title: city.name,
+          icon: "//vdata.amap.com/icons/b18/1/2.png",
+          // icon:'https://s3.ax1x.com/2021/01/18/syBxTH.gif'
         });
         // 显示卡片
         AMap.event.addListener(this.marker, "click", (city) => {
@@ -248,6 +277,10 @@ export default {
         });
         this.amap.add(this.marker);
       }
+    },
+    // 移除点标记
+    removePoint() {
+      this.amap.clearMap();
     },
     // 两边的信息消失，展示区域信息，以及全国汇总信息
     showAreaInfo() {
@@ -272,7 +305,9 @@ export default {
       this.$emit("cabinet", cabinet);
     },
     // 设置地图的棱柱
-    setPrism() {
+    setPrism(val) {
+      console.log("setPrism", val);
+      let city = val ? val.name : "中国";
       // 设置光照
       this.amap.AmbientLight = new AMap.Lights.AmbientLight([1, 1, 1], 0.5);
       this.amap.DirectionLight = new AMap.Lights.DirectionLight(
@@ -280,59 +315,126 @@ export default {
         [1, 1, 1],
         1
       );
-      var object3Dlayer = new AMap.Object3DLayer();
-      this.amap.add(object3Dlayer);
+      // let object3Dlayer = new AMap.Object3DLayer();
+      this.amap.add(this.object3Dlayer);
       AMap.plugin("AMap.DistrictSearch", () => {
         new AMap.DistrictSearch({
           subdistrict: 0, //返回下一级行政区
           extensions: "all", //返回行政区边界坐标组等具体信息
           level: "city", //查询行政级别为 市
-        }).search("中国", (status, result) => {
+        }).search(city, (status, result) => {
           const bounds = result.districtList[0].boundaries;
-          const height = 5000;
+          let height = 500000;
+          const color = "#00ffff80";
+
+          if (val) {
+            if (val.level === "city" || val.level === "province") {
+              height = 50000;
+              this.prism = new AMap.Object3D.Prism({
+                path: bounds,
+                height: height,
+                color: color,
+              });
+              this.prism.transparent = true;
+              this.object3Dlayer.add(this.prism);
+            } else {
+              // height = 0;
+              // this.object3Dlayer.remove(this.prism);
+            }
+          } else {
+            this.prism = new AMap.Object3D.Prism({
+              path: bounds,
+              height: height,
+              color: color,
+            });
+            this.prism.transparent = true;
+            this.object3Dlayer.add(this.prism);
+          }
+
           // const color = "#0088ffcc"; // rgba
-          const color = "#00c1fc80";
-          const prism = new AMap.Object3D.Prism({
-            path: bounds,
-            height: height,
-            color: color,
-          });
-
-          prism.transparent = true;
-          object3Dlayer.add(prism);
-
-          const text = new AMap.Text({
-            text:
-              result.districtList[0].name +
-              "</br>(" +
-              result.districtList[0].adcode +
-              ")",
-            verticalAlign: "bottom",
-            position: [116.528261, 39.934313],
-            height: 5000,
-            style: {
-              "background-color": "transparent",
-              "-webkit-text-stroke": "red",
-              "-webkit-text-stroke-width": "0.5px",
-              "text-align": "center",
-              border: "none",
-              color: "white",
-              "font-size": "24px",
-              "font-weight": 600,
-            },
-          });
-
-          text.setMap(this.amap);
         });
       });
     },
+    // 设置地图的柱状图 高德地图本身的
+    setHistogram() {
+      this.layer = new Loca.ScatterPointLayer({
+        map: this.amap,
+        eventSupport: true,
+      });
+      let oldvalue = 0;
+      let index = 0;
+
+      setInterval(() => {
+        let newHeatGrid = [];
+        newHeatGrid = heatGrid.map((item) => {
+          const sqr = Math.ceil(Math.random() * 30 + 30);
+          // index ++
+          // console.log('oldvalue',oldvalue);
+
+          // const sqr = oldvalue*2;
+          // console.log('val',val);
+          // console.log("val + Number(item.Number)", sqr + Number(item.value)/5);
+          // if (oldvalue < item.value) {
+          return {
+            coord: item.coord,
+            // value: sqr + Number(item.value) / 5,
+            value: sqr + Number(item.value),
+          };
+          // }
+        });
+        newHeatGrid.forEach((v) => {
+          oldvalue = Number(v.value);
+        });
+        // console.log("heatGrid", newHeatGrid);
+        const data = [...newHeatGrid];
+        this.layer.setData(data, {
+          lnglat: "coord",
+        });
+        this.layer.setOptions({
+          // 单位米
+          unit: "meter",
+          style: {
+            // 正多边形半径
+            radius: 25000,
+            height: {
+              key: "value",
+              // value: [0, 100000],
+              value: [0, 500000],
+            },
+
+            color: function(obj) {
+              // console.log("obj", obj);
+              if (obj.value.value > 5000) {
+                return "#DCE872";
+              }
+              if (obj.value.value > 3000) {
+                return "#7CCF98";
+              }
+              return "#10B3B0";
+            },
+
+            opacity: 0.9,
+          },
+          selectStyle: {
+            color: "#fcff19",
+            opacity: 0.9,
+          },
+        });
+        this.layer.render();
+      }, 1000);
+    },
   },
+
   watch: {
     reContry(val) {
       this.aReContry = val;
       this.switch2AreaNode(100000);
       this.$store.commit("SET_NATIONWIDE", false);
       this.$store.commit("SET_CARDSHOW", false);
+      this.removePoint();
+      this.setHistogram();
+      this.object3Dlayer.remove(this.prism);
+      this.setPrism();
     },
     position(val) {
       /**
@@ -366,5 +468,9 @@ export default {
 // h1 {
 //   color: #00c1fc80;
 //   color: rgb(0, 105, 150);
+//   transition: all 1s;
 // }
+h1 {
+  color: #00ffffb4;
+}
 </style>

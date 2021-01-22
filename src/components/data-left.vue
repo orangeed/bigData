@@ -20,27 +20,33 @@
             >
               单位总数(个)
             </p>
-            <dv-digital-flop
-              :config="config"
-              style="height: 30px;"
-              rowGap="0"
+  
+            <number
+              :textColor="totalNumber"
+              :startVal="totalNumber.startVal"
+              :endVal="totalNumber.endVal"
+              :duration="3000"
             />
           </div>
           <div class="unitInfo">
             <div class="unitInfo-left">
               <p class="center" style="font-size:14px">待激活单位总数(个)</p>
-              <dv-digital-flop
-                :config="config1"
-                style="height: 30px"
-                rowGap="0"
+              <number
+                :textColor="waitNumber"
+                :startVal="waitNumber.startVal"
+                :endVal="waitNumber.endVal"
+                :duration="3000"
+                style="padding-bottom:10px"
               />
             </div>
             <div class="unitInfo-right">
               <p class="center" style="font-size:14px">已激活单位总数(个)</p>
-              <dv-digital-flop
-                :config="config2"
-                style="height: 30px"
-                rowGap="0"
+              <number
+                :textColor="activationNumber"
+                :startVal="activationNumber.startVal"
+                :endVal="activationNumber.endVal"
+                :duration="3000"
+                style="padding-bottom:10px"
               />
             </div>
           </div>
@@ -58,7 +64,7 @@
               rowGap="0"
             />
           </div>
-        </div>
+        </div>s
         <div>
           <p class="center" style="font-size:14px">已激活单位总数</p>
           <dv-digital-flop :config="config2" style="height: 50px" rowGap="0" />
@@ -108,6 +114,7 @@
 
 <script>
 import notice from "@/components/data-notice.vue";
+import number from "@/components/number/data-number.vue";
 
 const formatter = (number) => {
   const numbers = number
@@ -124,39 +131,28 @@ const formatter = (number) => {
     .reverse()
     .join("");
 };
+
 export default {
   props: {},
   data() {
     return {
       // 单位总数
-      config: {
-        number: [1234567893],
-        content: "{nt}个",
-        formatter,
-        style: {
-          fontSize: 20,
-          fill: "#00FFFF",
-        },
+      totalNumber: {
+        color: "#3FA9F5",
+        startVal: 0,
+        endVal: 12344567,
       },
       // 待激活单位总数
-      config1: {
-        number: [1234567893],
-        content: "{nt}个",
-        formatter,
-        style: {
-          fill: "#3FA9F5",
-          fontSize: 20,
-        },
+      waitNumber: {
+        color: "#00FFFF",
+        startVal: 0,
+        endVal: 200,
       },
       // 已激活单位总数
-      config2: {
-        number: [567893],
-        content: "{nt}个",
-        formatter,
-        style: {
-          fill: "#009245",
-          fontSize: 20,
-        },
+      activationNumber: {
+        color: "#00FFFF",
+        startVal: 0,
+        endVal: 200,
       },
       // 省份单位数量统计
       provincialConfig: {
@@ -236,7 +232,14 @@ export default {
   },
   computed: {},
   created() {},
-  mounted() {},
+  mounted() {
+    setInterval(() => {
+      this.waitNumber.startVal = this.waitNumber.endVal;
+      this.waitNumber.endVal += 1;
+      this.activationNumber.startVal = this.activationNumber.endVal;
+      this.activationNumber.endVal += 1;
+    }, 1000);
+  },
   watch: {},
   methods: {
     clickRow(val) {
@@ -245,7 +248,7 @@ export default {
       console.log(111111);
     },
   },
-  components: { notice },
+  components: { notice, number },
 };
 </script>
 
@@ -325,7 +328,7 @@ export default {
   .line {
     position: relative;
     top: -12px;
-    left: 0;
+    left: 10px;
   }
 }
 // 排名轮播表外面的柱状图
@@ -345,5 +348,8 @@ export default {
 }
 /deep/.dv-scroll-ranking-board .ranking-info .rank {
   color: #fff !important;
+}
+.totalNumber {
+  color: red !important;
 }
 </style>

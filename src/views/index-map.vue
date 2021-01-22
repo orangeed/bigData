@@ -4,12 +4,27 @@
     <dv-full-screen-container>
       <dv-loading v-if="loading">Loading...</dv-loading>
       <div v-else class="bgmap">
+        <!-- 高得地图 -->
         <dataMap
           :re-contry="reContry"
           @jinwei="jinwei"
           @cabinet="cabinet"
           :position="positionInfo"
         />
+        <!-- 百度地图 -->
+        <!-- <dataMapBaidu
+          :re-contry="reContry"
+          @jinwei="jinwei"
+          @cabinet="cabinet"
+          :position="positionInfo"
+        /> -->
+        <!-- echatrs地图 -->
+        <!-- <echartsMap
+          :re-contry="reContry"
+          @jinwei="jinwei"
+          @cabinet="cabinet"
+          :position="positionInfo"
+        /> -->
         <div class="top"><top /></div>
         <!-- 左边信息 -->
         <div
@@ -30,9 +45,7 @@
         <!-- 省市区头部展示数据 -->
         <div
           :class="
-            $store.getters.nationwide
-              ? 'fadein pro-title'
-              : 'fadeout nationwide'
+            $store.getters.nationwide ? 'fadein pro-title' : 'fadeout pro-title'
           "
           v-show="$store.getters.nationwide"
         >
@@ -117,11 +130,13 @@
 <script>
 import top from "@/components/data-top.vue";
 import dataMap from "@/components/data-map.vue";
+// import dataMapBaidu from "@/components/data-mapBaidu.vue";
+// import echartsMap from "@/components/data-echarts-map.vue";
 import left from "@/components/data-left.vue";
 import right from "@/components/data-right.vue";
 import bottom from "@/components/data-bottom.vue";
 import notice from "@/components/data-notice.vue";
-import chinaMap from "@/components/data-chinaMap.vue";
+// import chinaMap from "@/components/data-chinaMap.vue";
 import proTitle from "../components/data-proTitle.vue";
 import card from "../components/data-card.vue";
 import errorTable from "../components/data-errorTable.vue";
@@ -169,6 +184,7 @@ export default {
     position(val) {
       console.log("position", val);
       this.positionInfo = [...val.row];
+      this.$store.commit("SET_ERRORDETAILS", true);
     },
     // 显示展示项
     changeModuleOptions() {
@@ -182,11 +198,13 @@ export default {
   components: {
     top,
     dataMap,
+    // dataMapBaidu,
+    // echartsMap,
     left,
     right,
     bottom,
     notice,
-    chinaMap,
+    // chinaMap,
     proTitle,
     card,
     errorTable,
@@ -294,7 +312,7 @@ export default {
       .nationwide {
         position: absolute;
         top: 8%;
-        width: 100%;
+        // width: 100%;
         // transform: translateX(155%);
         // display: flex;
         // justify-content: center;
@@ -315,16 +333,16 @@ export default {
         height: 20%;
         width: 20%;
         text-align: center;
-        top: 20%;
-        left: 10%;
+        top: 30%;
+        left: 16%;
       }
       .cabinet-card {
         position: absolute;
         height: 20%;
         width: 20%;
         text-align: center;
-        top: 20%;
-        right: 10%;
+        top: 60%;
+        left: 40%;
       }
       .errorTable {
         position: absolute;

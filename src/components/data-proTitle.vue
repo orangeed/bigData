@@ -1,11 +1,12 @@
 <!-- 省市区的头部信息 -->
 <template>
   <div id="proTitle">
-    <div class="proTitle-item">
-      <div
-        class=" bg-ligra bg-round"
-        style="display: flex;width:100%;margin:-8px 0px"
-      >
+    <div
+      :class="
+        !$store.getters.isErrorDetails ? 'proTitle-item' : 'proTitle-item tra'
+      "
+    >
+      <div class="bgc bg-ligra bg-round" v-if="!$store.getters.isErrorDetails">
         <div class="nationwide-info-item">
           <p class="nationwide-info-item-title">设备总量</p>
           <p class="nationwide-info-item-num blue">
@@ -34,6 +35,12 @@
             {{ totalNum.equipmentErr }}
           </p>
         </div>
+      </div>
+      <div class="bgc bg-ligra bg-round errorInfo" v-else>
+        <p>
+          <span>设备异常原因：</span>
+          <span class="danger">闪电发货SDK峰会上开发设备异常原因</span>
+        </p>
       </div>
     </div>
     <!-- <errorTable/> -->
@@ -76,6 +83,9 @@ export default {
   .proTitle-item {
     border: 23px solid transparent;
     border-image: url("../assets/border/4/4_03.png") 23;
+    // background-color: rgba(0, 20, 33, 0.8);
+    border-radius: 16px;
+
     .nationwide-info-item {
       text-align: center;
       width: 100%;
@@ -90,6 +100,26 @@ export default {
         // font-weight: 700;
       }
     }
+    .errorInfo {
+      width: 355px !important;
+      height: 127px;
+      word-wrap: break-word;
+      word-break: break-all;
+      overflow: hidden; /*这个参数根据需要来绝对要不要*/
+      padding: 0px 10px;
+      display: flex;
+      align-items: center;
+    }
+    .bgc {
+      background-color: rgba(0, 20, 33, 0.8);
+      display: flex;
+      width: 100%;
+      margin: -8px 0px;
+    }
+  }
+  .tra {
+    transform: translateX(22%) !important;
+    text-align: center;
   }
 }
 </style>

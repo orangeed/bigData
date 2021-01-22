@@ -38,9 +38,12 @@ module.exports = {
                 '@': resolve('src')
             }
         },
+
         externals: {
             AMap: "AMap",
-            AMapUI: "AMapUI"
+            AMapUI: "AMapUI",
+            Loca: 'Loca'
+            // "BMap": "BMap"
         }
     },
     chainWebpack(config) {

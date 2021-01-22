@@ -13,8 +13,8 @@
           :key="index"
           :class="
             item.state === 0
-              ? 'notice-info-item bg-ligra success'
-              : 'notice-info-item bg-ligra error'
+              ? 'notice-info-item bg-ligra text1'
+              : 'notice-info-item bg-ligra danger'
           "
         >
           {{ item.info }}

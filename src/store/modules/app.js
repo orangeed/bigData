@@ -19,7 +19,8 @@ const app = {
             cabinetDistributionNumber: true,
             cabinetDistributionUnit: true,
             callDistribution: true
-        }
+        },
+        isErrorDetails: true
     },
     mutations: {
         SET_NATIONWIDE: (state, nationwide) => {
@@ -37,6 +38,9 @@ const app = {
         SET_MODULEOPTIONS: (state, moduleOptions) => {
             state.moduleOptions = moduleOptions
         },
+        SET_ERRORDETAILS:(state,isErrorDetails)=>{
+            state.isErrorDetails = isErrorDetails
+        }
     },
     actions: {
 

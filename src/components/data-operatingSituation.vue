@@ -49,12 +49,12 @@ export default {
                   { offset: 1, color: "#F7931E" },
                 ]),
                 new echarts.graphic.LinearGradient(0, 1, 2, 0, [
-                  { offset: 0, color: "#153F5E" },
-                  { offset: 1, color: "#3FA9F5" },
-                ]),
-                new echarts.graphic.LinearGradient(0, 1, 1, 0, [
                   { offset: 0, color: "#00575D" },
                   { offset: 1, color: "#00FFFF" },
+                ]),
+                new echarts.graphic.LinearGradient(0, 1, 1, 0, [
+                  { offset: 0, color: "#153F5E" },
+                  { offset: 1, color: "#3FA9F5" },
                 ]),
               ];
               return colorList[params.dataIndex];

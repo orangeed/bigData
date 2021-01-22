@@ -1,31 +1,30 @@
 <!-- 首页展示的设备基本信息 -->
 <template>
-  <div id="nationwide" v-if='$store.getters.moduleOptions.deviceStatistics'>
+  <div id="nationwide" v-if="$store.getters.moduleOptions.deviceStatistics">
     <div class="nationwide-info ">
       <div class="el-title">
         <p>设备统计信息</p>
       </div>
       <div class="nationwide-info-item bg-ligra">
         <p class="nationwide-info-item-title ">设备数量</p>
-        <p class="nationwide-info-item-num text1">
+        <p class="nationwide-info-item-num blue ">
           {{ totalNum.equipmentAll }}
         </p>
       </div>
 
       <div class="nationwide-info-item bg-ligra">
         <p class="nationwide-info-item-title ">设备实时在线量</p>
-        <p class="nationwide-info-item-num blue">
+        <p class="nationwide-info-item-num text1">
           {{ totalNum.equipmentOnline }}
         </p>
       </div>
 
       <div class="nationwide-info-item bg-ligra">
         <p class="nationwide-info-item-title ">设备在线率</p>
-        <p class="nationwide-info-item-num blue">
+        <p class="nationwide-info-item-num text1">
           100%
         </p>
       </div>
-
       <div
         :class="
           $store.getters.showErrorTable
@@ -39,7 +38,11 @@
         <p class="nationwide-info-item-num danger">
           {{ totalNum.equipmentErr }}
         </p>
-        <img v-show="$store.getters.showErrorTable" src="../assets/border/2/2_68.png" alt="" />
+        <img
+          v-show="$store.getters.showErrorTable"
+          src="../assets/border/2/2_68.png"
+          alt=""
+        />
       </div>
     </div>
     <!-- <div class="btn-grounp">

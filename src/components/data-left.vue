@@ -20,7 +20,7 @@
             >
               单位总数(个)
             </p>
-  
+
             <number
               :textColor="totalNumber"
               :startVal="totalNumber.startVal"
@@ -86,11 +86,15 @@
       <div class="provincialBoard">
         <div class="provincialBoard-item">
           <div class="bg-ligra bg-round" style="padding:10px;margin-bottom:5px">
-            <dv-scroll-ranking-board
+            <carouselRanking
+              :carouselRanking="provincialData"
+              
+            />
+            <!-- <dv-scroll-ranking-board
               :config="provincialConfig"
               style="height: 352px;"
               @click="clickRow"
-            />
+            /> -->
           </div>
         </div>
       </div>
@@ -115,22 +119,7 @@
 <script>
 import notice from "@/components/data-notice.vue";
 import number from "@/components/number/data-number.vue";
-
-const formatter = (number) => {
-  const numbers = number
-    .toString()
-    .split("")
-    .reverse();
-  const segs = [];
-
-  while (numbers.length) segs.push(numbers.splice(0, 3).join(""));
-
-  return segs
-    .join(",")
-    .split("")
-    .reverse()
-    .join("");
-};
+import carouselRanking from "@/components/carouselRanking/data-carouselRanking.vue";
 
 export default {
   props: {},
@@ -155,6 +144,66 @@ export default {
         endVal: 200,
       },
       // 省份单位数量统计
+      provincialData: {
+        data: [
+          {
+            name: "周口",
+            value: 111,
+          },
+          {
+            name: "南阳",
+            value: 777,
+          },
+          {
+            name: "西峡",
+            value: 4545,
+          },
+          {
+            name: "驻马店",
+            value: 788,
+          },
+          {
+            name: "新乡",
+            value: 234,
+          },
+          {
+            name: "信阳",
+            value: 1234,
+          },
+          {
+            name: "漯河",
+            value: 29,
+          },
+          {
+            name: "新乡",
+            value: 56456,
+          },
+          {
+            name: "信阳",
+            value: 4574,
+          },
+          {
+            name: "漯河1",
+            value: 44231,
+          },
+          {
+            name: "南阳",
+            value: 120,
+          },
+          {
+            name: "西峡1",
+            value: 12022,
+          },
+          {
+            name: "驻马店1",
+            value: 63411,
+          },
+        ],
+        fontSize: "14px",
+        minHeight: "34px",
+        backgroundColor: "#00444c",
+        endIndex: 8,
+      },
       provincialConfig: {
         data: [
           {
@@ -248,7 +297,7 @@ export default {
       console.log(111111);
     },
   },
-  components: { notice, number },
+  components: { notice, number, carouselRanking },
 };
 </script>
 

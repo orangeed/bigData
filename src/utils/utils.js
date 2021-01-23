@@ -47,3 +47,13 @@ export const closeInfoWin = () => {
         infoWin.close();
     }
 }
+
+/**
+ * 对象数组数字中的值排序
+ */
+export const sortObjectArray = (objArray) => {
+    return objArray.slice(0).sort(function (a, b) {
+        return b.value - a.value;
+    });
+
+}

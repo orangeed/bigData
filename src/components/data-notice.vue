@@ -4,20 +4,18 @@
     <div class="title-new">
       <span class="title-new-bg">{{ title }}</span>
     </div>
-    <!-- <div class="title">{{ title }}</div> -->
     <div>
-      <!-- <dv-border-box-7 class="notice-info"> -->
       <div class="notice-info">
         <div
-          v-for="(item, index) in isUnit ? noticeInfo : unitInfo"
-          :key="index"
-          :class="
-            item.state === 0
-              ? 'notice-info-item bg-ligra text1'
-              : 'notice-info-item bg-ligra danger'
-          "
+          v-for="(item, index) in defaultInfo.data"
+          :key="item.id"
+          :class="item.state === 0 ? ' bg-ligra text1' : ' bg-ligra danger'"
         >
-          {{ item.info }}
+          <transition name="slide" >
+            <div class="notice-info-item" v-show="!timer || index">
+              {{ item.info }}
+            </div>
+          </transition>
         </div>
       </div>
 
@@ -29,9 +27,11 @@
 <script>
 export default {
   props: {
-    isUnit: {
-      type: Boolean,
-      default: true,
+    info: {
+      type: Object,
+      default: () => {
+        return {};
+      },
     },
     title: {
       type: String,
@@ -40,60 +40,71 @@ export default {
   },
   data() {
     return {
-      noticeInfo: [
-        {
-          state: 0,
-          info: "杭州市教育局的迷你型柜子被激活了。",
-        },
-        {
-          state: 1,
-          info: "杭州市教育局的迷你型柜子被激活了。",
-        },
-        // {
-        //   state: 1,
-        //   info: "杭州市教育局的迷你型柜子被激活了。",
-        // },
-        // {
-        //   state: 0,
-        //   info: "杭州市教育局的迷你型柜子被激活了。",
-        // },
-      ],
-      unitInfo: [
-        {
-          state: 0,
-          info: "杭州市高级中学被激活了。",
-        },
-        {
-          state: 0,
-          info: "杭州市第三人民医院被激活了。",
-        },
-      ],
+      defaultInfo: {
+        // 源数据
+        data: [],
+        // 动画时间
+        duration: 2000,
+      },
+      timer: undefined,
     };
   },
   computed: {},
-  created() {},
-  mounted() {},
+  created() {
+    const data = this.info.data;
+    delete this.info.data;
+    const info = Object.assign(this.info, this.defaultInfo);
+    info.data = data;
+    this.defaultInfo = info;
+    this.info.data.forEach((v, i) => {
+      v.id = i + 1;
+    });
+  },
+  mounted() {
+    this.startInterval();
+  },
   watch: {},
-  methods: {},
+  methods: {
+    // 开始动画
+    startInterval() {
+      if (!this.timer) {
+        const scroll = () => {
+          const list = [...this.defaultInfo.data];
+          list.push(list.shift());
+          this.defaultInfo.data = list;
+          this.defaultInfo = {...this.defaultInfo}
+        };
+        this.timer = setInterval(() => {
+          scroll();
+        }, this.defaultInfo.duration);
+      }
+    },
+  },
   components: {},
+  destroyed() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+  },
 };
 </script>
 
 <style scoped lang="scss">
 #notice {
-  // width: 21vw;
-  // height: 320px;
-  width: 100%;
-  height: 100%;
   position: relative;
   .notice-info {
     margin-top: 20px;
     border: 30px solid transparent;
     border-image: url("../assets/border/1/left_03.png") 30;
+    height: 96px;
+    overflow: hidden;
     .notice-info-item {
       padding: 8px;
       margin-bottom: 10px;
-      &:nth-child(1){
+      height: 20px;
+      margin-top: 0px;
+      transition: all 0.3s;
+      &:nth-child(1) {
         margin-top: 10px;
       }
 
@@ -102,5 +113,18 @@ export default {
       }
     }
   }
+}
+
+@keyframes noticeScroll {
+  0% {
+    margin-top: 0px;
+  }
+
+  100% {
+    margin-top: -40px;
+  }
+}
+.slide-leave-active {
+  animation: noticeScroll 1 .3s forwards;
 }
 </style>

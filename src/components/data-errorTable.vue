@@ -1,6 +1,6 @@
 <!-- 异常设备信息表格 -->
 <template>
-  <div id="errorTable" class="fadein">
+  <div id="errorTable" class="fadein" v-show="$store.getters.moduleOptions.equipmentAbnormality">
     <dv-scroll-board :config="config" class="scrollTable" @click="clickRow" />
   </div>
 </template>
@@ -80,5 +80,6 @@ export default {
     padding-bottom: 20px;
   }
 }
+
 
 </style>

@@ -18,6 +18,7 @@
         :legend="legend"
         :grid="grid"
         :colors="colors"
+        :dataZoom="dataZoom"
         class="histogram bg-ligra bg-round"
       ></ve-histogram>
     </div>
@@ -82,6 +83,11 @@ export default {
             "2020-11",
             "2020-12",
           ],
+        },
+      ],
+      dataZoom: [
+        {
+          type: "inside",
         },
       ],
       // 距离

@@ -1,31 +1,42 @@
 <!-- 轮播排名 -->
 <template>
-  <div id="carouselRanking" ref="box">
-    <div>
+  <!-- <div class="bg-ligra bg-round"> -->
+  <div id="carouselRanking"  class="bg-ligra bg-round">
+    <div @mouseenter="mouseenter" @mouseleave="mouseleave">
       <div
         v-for="(item, index) in newCarouselRanking.data"
-        :key="item.name"
-        :style="{
-          fontSize: newCarouselRanking.fontSize,
-          minHeight: newCarouselRanking.minHeight,
-        }"
-        class="carouselRanking-item"
+        :key="item.id"
+        @click="showItem(item)"
       >
-        <!-- v-if="startIndex < index + 1 && endIndex > index" -->
-        <transition name="item" :duration="1000">
-          <!-- <div class="item" v-show="index !== 0">{{ value * 100 }}</div> -->
-          <div class="item" v-show="index">
+        <transition name="item">
+          <div
+            v-show="!timer || index"
+            class="carouselRanking-item"
+            :style="{
+              fontSize: newCarouselRanking.fontSize,
+              margin: newCarouselRanking.margin,
+            }"
+          >
             <p class="top">
-              <span class="flex-left"
-                >No.{{ index + 1
-                }}<span style="margin-left:10px">{{ item.name }}</span></span
-              >
+              <span class="flex-left">
+                No.{{ item.id }}
+                <span style="margin-left:10px">{{ item.name }}</span>
+              </span>
               <span class="flex-right">{{ item.value | numberFilter }}</span>
             </p>
-            <p
-              class="bottom"
-              :style="{ backgroundColor: carouselRanking.backgroundColor }"
-            ></p>
+            <div class="bottom">
+              <p
+                class="bottom-out"
+                :style="{ backgroundColor: newCarouselRanking.backgroundColor }"
+              ></p>
+              <p
+                class="bottom-inner"
+                :style="{
+                  backgroundColor: newCarouselRanking.innerBackgroundColor,
+                  width: `${(item.value / firstNum) * 100}%`,
+                }"
+              ></p>
+            </div>
           </div>
         </transition>
       </div>
@@ -61,122 +72,78 @@ export default {
   },
   data() {
     return {
-      startIndex: 0,
-      endIndex: 8,
-      // height: 35.6,
-      // delay: 2000,
-      // speed: 50,
       timer: undefined,
-      newCarouselRanking: this.carouselRanking,
+      newCarouselRanking: {
+        //源数据
+        data: [],
+        // 字体大小
+        fontSize: "14px",
+        // 外面颜色
+        backgroundColor: "#00444c",
+        // 动画时间
+        duration: 2000,
+        // 间距
+        margin: "0px",
+        // 里面的颜色
+        innerBackgroundColor: "#00FFFF",
+      },
+      firstNum: 0,
     };
   },
   computed: {},
   created() {
+    const data = this.carouselRanking.data;
+    delete this.carouselRanking.data;
+    const carouselRanking = Object.assign(
+      this.newCarouselRanking,
+      this.carouselRanking
+    );
+    carouselRanking.data = data;
+    this.newCarouselRanking = carouselRanking;
     this.newCarouselRanking.data = sortObjectArray(
       this.newCarouselRanking.data
     );
-    this.endIndex = this.newCarouselRanking.endIndex;
-    if (this.newCarouselRanking.time) {
-      this.time = this.newCarouselRanking.time;
-    }
-    console.log("carouselRanking", this.newCarouselRanking);
+    this.firstNum = this.newCarouselRanking.data[0].value;
+    this.newCarouselRanking.data.forEach((v, i) => {
+      v.id = i + 1;
+    });
   },
   mounted() {
     this.startInterval();
   },
   watch: {},
   methods: {
+    // 开始动画
     startInterval() {
       if (!this.timer) {
         const scroll = () => {
           const list = [...this.newCarouselRanking.data];
           list.push(list.shift());
           this.newCarouselRanking.data = list;
-          this.newCarouselRanking = JSON.parse(
-            JSON.stringify(this.newCarouselRanking)
-          );
         };
         this.timer = setInterval(() => {
           scroll();
-        }, 1000);
+        }, this.newCarouselRanking.duration);
       }
     },
-    boxMouseenter() {
+    mouseenter() {
       if (this.timer) {
         clearInterval(this.timer);
         this.timer = undefined;
       }
     },
-    boxMouseleave() {
-      this.boxMouseenter();
+    mouseleave() {
+      this.mouseenter();
       this.startInterval();
     },
-    roll() {
-      // var area = document.getElementById("box");
-      const area = this.$refs.box;
-      area.innerHTML += area.innerHTML;
-      var liHeight = 24;
-      area.scrollTop = 0;
-      var delay = 2000;
-      var speed = 50;
-      var time;
-
-      function starMove() {
-        area.scrollTop++;
-        time = setInterval(scrollUp, speed);
-      }
-
-      function scrollUp() {
-        if (area.scrollTop % liHeight == 0) {
-          clearInterval(time);
-          setTimeout(starMove, delay);
-        } else {
-          area.scrollTop++;
-          if (area.scrollTop >= area.offsetHeight / 2) {
-            area.scrollTop = 0;
-          }
-        }
-      }
-      setTimeout(starMove, delay);
-      // const box = this.$refs.box;
-      // box.scrollTop = 0;
-      // box.innerHTML += box.innerHTML;
-      // const restart = () => {
-      //   if (box.scrollTop >= one.scrollHeight) {
-      //     box.scrollTop = 0;
-      //   } else {
-      //     box.scrollTop += 43;
-      //     console.log("box.scrollTop", box.scrollTop);
-      //   }
-      // };
-      // function starMove() {
-      //   box.scrollTop++;
-      //   this.timer = setInterval(scrollUp, this.speed);
-      // }
-
-      // function scrollUp() {
-      //   if (box.scrollTop % this.height == 0) {
-      //     clearInterval(this.timer);
-      //     setTimeout(starMove, this.delay);
-      //   } else {
-      //     box.scrollTop++;
-      //     if (box.scrollTop >= box.offsetHeight / 2) {
-      //       box.scrollTop = 0;
-      //     }
-      //   }
-      // }
-      // setTimeout(starMove, this.delay);
-
-      // let timer = setInterval(restart, this.time);
-
-      // box.onmouseover = () => {
-      //   clearInterval(this.timer);
-      // };
-      // box.onmouseout = () => {
-      //   // timer = setInterval(restart, this.time);
-      //   setTimeout(startMove, this.delay);
-      // };
+    showItem(val) {
+      this.$emit("rowClick", val);
     },
+  },
+  destroyed() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   },
   components: {},
 };
@@ -186,6 +153,9 @@ export default {
 #carouselRanking {
   overflow: hidden;
   height: 356px;
+  width: 100%;
+  cursor: pointer;
+  padding: 10px 0px;
 
   .top {
     display: flex;
@@ -201,15 +171,33 @@ export default {
     }
   }
   .bottom {
-    margin-top: 5px;
-    height: 5px;
-    border-radius: 5px;
+    margin-top: -5px;
+
+    position: relative;
+    .bottom-out {
+      width: 100%;
+      height: 5px;
+      border-radius: 5px;
+      position: absolute;
+      top: 0;
+    }
+    .bottom-inner {
+      @extend .bottom-out;
+      top: 0;
+    }
   }
 
   .carouselRanking-item {
     margin-top: 0;
     height: 46px;
     transition: all 0.3s;
+    padding: 0px 16px;
+    
+    // padding: 32px;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+      // width: 110%;
+    }
   }
 }
 .item-leave-active {

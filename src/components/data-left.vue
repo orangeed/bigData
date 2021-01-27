@@ -4,7 +4,7 @@
     <!-- 单位统计信息 -->
     <div
       v-if="$store.getters.moduleOptions.unitStatistics"
-      class="unit-info transition"
+      class="fadein unit-info transition"
     >
       <!-- <div class="title">单位统计信息</div> -->
       <div class="title-new">
@@ -51,64 +51,40 @@
             </div>
           </div>
         </div>
-
-        <!-- <div class="unitInfo-left">
-            <p class="center" style="font-size:14px">单位总数</p>
-            <dv-digital-flop :config="config" style="height: 30px" rowGap="0" />
-          </div>
-          <div class="unitInfo-right">
-            <p class="center" style="font-size:14px">待激活单位总数</p>
-            <dv-digital-flop
-              :config="config1"
-              style="height: 30px"
-              rowGap="0"
-            />
-          </div>
-        </div>s
-        <div>
-          <p class="center" style="font-size:14px">已激活单位总数</p>
-          <dv-digital-flop :config="config2" style="height: 50px" rowGap="0" />
-        </div> -->
       </div>
-
-      <!-- </dv-border-box-8> -->
     </div>
 
     <!-- 省份单位数量统计 -->
     <div
-      class="provincial transition"
-      v-if="$store.getters.moduleOptions.unitStatisticsRannking"
+      class="fadein provincial transition"
+      v-show="$store.getters.moduleOptions.unitStatisticsRannking"
     >
       <div class="title-new">
         <span class="title-new-bg">省份单位数量统计</span>
       </div>
-      <!-- <div class="title">省份单位数量统计</div> -->
       <div class="provincialBoard">
         <div class="provincialBoard-item">
-          <div class="bg-ligra bg-round" style="padding:10px;margin-bottom:5px">
-            <carouselRanking
-              :carouselRanking="provincialData"
-              
-            />
-            <!-- <dv-scroll-ranking-board
-              :config="provincialConfig"
-              style="height: 352px;"
-              @click="clickRow"
-            /> -->
-          </div>
+          <!-- <div class="bg-ligra bg-round"> -->
+          <carouselRanking
+            :carouselRanking="provincialData"
+            @rowClick="rowClick"
+          />
         </div>
       </div>
     </div>
     <!-- 单位激活信息 -->
     <div
-      class="unitNotice"
+      class="fadein unitNotice"
       v-if="$store.getters.moduleOptions.onlineUnitActivationInfo"
     >
-      <notice title="实时单位激活信息" :isUnit="false" />
+      <notice title="实时单位激活信息" :info="unitInfo" />
     </div>
     <!-- 柜子激活信息 -->
-    <div class="notice" v-if="$store.getters.moduleOptions.onlineDeviceInfor">
-      <notice title="实时柜子信息" />
+    <div
+      class="fadein notice"
+      v-if="$store.getters.moduleOptions.onlineDeviceInfor"
+    >
+      <notice title="实时柜子信息" :info="noticeInfo" />
     </div>
     <div class="line">
       <img src="../assets/border/1/line.png" />
@@ -202,80 +178,65 @@ export default {
         fontSize: "14px",
         minHeight: "34px",
         backgroundColor: "#00444c",
-        endIndex: 8,
+        duration: 2000,
       },
-      provincialConfig: {
+      // 实时柜子信息
+      noticeInfo: {
         data: [
           {
-            name: "周口",
-            value: 111,
+            state: 0,
+            info: "杭州市教育局的迷你型柜子被激活了。",
           },
           {
-            name: "南阳",
-            value: 777,
+            state: 1,
+            info: "222",
           },
           {
-            name: "西峡",
-            value: 4545,
+            state: 0,
+            info: "杭州市第一高级中学的迷你型柜子被激活了。",
           },
           {
-            name: "驻马店",
-            value: 788,
+            state: 0,
+            info: "333",
           },
           {
-            name: "新乡",
-            value: 234,
-          },
-          {
-            name: "信阳",
-            value: 1234,
-          },
-          {
-            name: "漯河",
-            value: 29,
-          },
-          {
-            name: "新乡",
-            value: 56456,
-          },
-          {
-            name: "信阳",
-            value: 4574,
-          },
-          {
-            name: "漯河1",
-            value: 44231,
-          },
-          {
-            name: "南阳",
-            value: 120,
-          },
-          {
-            name: "西峡1",
-            value: 12022,
-          },
-          {
-            name: "驻马店1",
-            value: 63411,
+            state: 0,
+            info: "444",
           },
         ],
-        unit: "个",
-        rowNum: 8,
-        waitTime: 2000,
-        hoverPause: true,
-        valueFormatter({ value }) {
-          const numbers = value
-            .toString()
-            .split("")
-            .reverse();
-          const segs = [];
-          while (numbers.length) segs.push(numbers.splice(0, 3).join(""));
-          return segs
-            .join(",")
-            .split("")
-            .reverse()
-            .join("");
-        },
+      },
+      // 实时单位激活信息
+      unitInfo: {
+        data: [
+          {
+            state: 0,
+            info: "杭州市高级中学被激活了。",
+          },
+          {
+            state: 1,
+            info: "杭州市第三人民医院被激活了。",
+          },
+          {
+            state: 0,
+            info: "222",
+          },
+          {
+            state: 1,
+            info: "333",
+          },
+          {
+            state: 0,
+            info: "444",
+          },
+          {
+            state: 1,
+            info: "555",
+          },
+          {
+            state: 0,
+            info: "666",
+          },
+        ],
       },
     };
   },
@@ -291,10 +252,9 @@ export default {
   },
   watch: {},
   methods: {
-    clickRow(val) {
-      // alert(1)
+    rowClick(val) {
       console.log(val);
-      console.log(111111);
+      alert(`这个是省市区的排名的点击事件${JSON.stringify(val)}`);
     },
   },
   components: { notice, number, carouselRanking },
@@ -338,12 +298,15 @@ export default {
     width: 100%;
     min-height: 392px;
     height: 100%;
+    // padding: 16px;
     // background-color: rgba(161, 161, 161, 0.1);
     position: relative;
     .provincialBoard {
       border: 30px solid transparent;
       border-image: url("../assets/border/1/left_02.png") 30;
+
       .provincialBoard-item {
+        // padding: -16px;
         // display: flex;
         // justify-content: center;
         // align-items: center;
@@ -379,26 +342,5 @@ export default {
     top: -12px;
     left: 10px;
   }
-}
-// 排名轮播表外面的柱状图
-/deep/.dv-scroll-ranking-board .ranking-column {
-  background-color: #00444c !important;
-  border: none !important;
-  border-radius: 5px;
-}
-// 排名轮播表里面的柱状图
-/deep/.dv-scroll-ranking-board .ranking-column .inside-column {
-  background-color: rgba(0, 255, 255, 0.3) !important;
-  border-radius: 5px !important;
-  padding: 1px 0px 1px 0px !important;
-  height: 4px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-/deep/.dv-scroll-ranking-board .ranking-info .rank {
-  color: #fff !important;
-}
-.totalNumber {
-  color: red !important;
 }
 </style>

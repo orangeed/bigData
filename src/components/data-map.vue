@@ -56,7 +56,7 @@ export default {
       zooms: [3, 20],
       // zoom: 5, // 地图显示的缩放级别
       resizeEnable: true, // 是否监控地图容器尺寸变化
-      pitch: 60, // 地图俯仰角度，有效范围 0 度- 83 度
+      pitch: 45, // 地图俯仰角度，有效范围 0 度- 83 度
       viewMode: "3D", // 地图模式
       mapStyle: "amap://styles/5b59f9b29bb6261d416ce7b61509c972", // 地图样式
     });
@@ -128,7 +128,7 @@ export default {
           // 全国
           this.switch2AreaNode(100000);
           this.setPrism();
-          this.setHistogram();
+          // this.setHistogram();
           // setTimeout(() => {
           //   this.setHistogram();
           //   // this.setHistogramEcharts();

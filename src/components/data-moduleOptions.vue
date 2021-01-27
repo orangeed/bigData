@@ -3,7 +3,7 @@
   <div id="moduleOptions">
     <img src="../assets/border/2/middle_02.png" alt="" />
     <form class="bg-ligra">
-      <div v-for="(item, index) in moduleOptions" :key="index">
+      <div v-for="(item, index) in moduleOptions" :key="index" style="margin:16px 0px">
         <input
           type="checkbox"
           :id="item.value"
@@ -71,13 +71,6 @@ export default {
 <style scoped lang="scss">
 @import "../style/color.scss";
 #moduleOptions {
-  // width: 100%;
-  // height: 100%;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // overflow: auto;
-  // border-radius: 10px;
   position: relative;
   img {
     position: absolute;
@@ -86,11 +79,7 @@ export default {
   }
 
   form {
-    // height: 100%;
-    // display: flex;
-    // justify-content: center;
-    // align-items: flex-start;
-    // flex-direction: column;
+    width: 104%;
     border: 5px solid transparent;
     border-radius: 20px;
     border-image: url("../assets/border/2/middle_01.png") 5;

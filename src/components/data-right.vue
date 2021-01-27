@@ -2,13 +2,13 @@
 <template>
   <div class="right-info">
     <!-- s设备类型信息 -->
-    <ring class="fadein" v-if="$store.getters.moduleOptions.deviceTypeInfo" />
-    <!-- 抽屉转态 -->
+    <ring class="fadein" v-show="$store.getters.moduleOptions.deviceTypeInfo" />
+    <!-- 抽屉状态 -->
     <pictorialBar class="fadein" v-if="$store.getters.moduleOptions.drawersNumber"/>
     <!-- 抽屉操作次数 -->
-    <operatingSituation class="fadein" v-if="$store.getters.moduleOptions.documentOperation"/>
+    <operatingSituation class="fadein" v-show="$store.getters.moduleOptions.documentOperation"/>
     <!-- 催缴 -->
-    <call class="fadein" v-if="$store.getters.moduleOptions.callDistribution"/>
+    <call class="fadein" v-show="$store.getters.moduleOptions.callDistribution"/>
   </div>
 </template>
 

@@ -93,7 +93,7 @@
         <!-- 设备异常信息表格 -->
         <errorTable
           class="errorTable"
-          v-show="$store.getters.showErrorTable"
+          v-if="$store.getters.showErrorTable"
           @position="position"
         />
         <!-- 展示项选择面板 -->

@@ -1,7 +1,7 @@
 <!-- 右边信息展示 -->
 <template>
   <div class="right-info">
-    <!-- s设备类型信息 -->
+    <!-- 设备类型信息 -->
     <ring class="fadein" v-show="$store.getters.moduleOptions.deviceTypeInfo" />
     <!-- 抽屉状态 -->
     <pictorialBar class="fadein" v-if="$store.getters.moduleOptions.drawersNumber"/>

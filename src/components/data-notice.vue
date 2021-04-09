@@ -5,21 +5,28 @@
       <span class="title-new-bg">{{ title }}</span>
     </div>
     <div>
-      <div class="notice-info">
+      <div class="notice-info" v-if="defaultInfo.data > 0">
         <div
           v-for="(item, index) in defaultInfo.data"
-          :key="item.id"
-          :class="item.state === 0 ? ' bg-ligra text1' : ' bg-ligra danger'"
+          :key="item.code"
+          class="bg-ligra text1"
         >
-          <transition name="slide" >
+          <!-- :class="item.state === 0 ? ' bg-ligra text1' : ' bg-ligra danger'" -->
+          <transition name="slide">
             <div class="notice-info-item" v-show="!timer || index">
-              {{ item.info }}
+              {{ item.unitName }}于{{ item.time }}激活！
             </div>
           </transition>
         </div>
       </div>
+      <div  class="notice-info" v-else>
+        <div class="bg-ligra text1">
+          <div class="notice-info-item">
+            暂无数据
+          </div>
+        </div>
+      </div>
 
-      <!-- </dv-border-box-7> -->
     </div>
   </div>
 </template>
@@ -51,19 +58,27 @@ export default {
   },
   computed: {},
   created() {
-    const data = this.info.data;
-    delete this.info.data;
-    const info = Object.assign(this.info, this.defaultInfo);
-    info.data = data;
-    this.defaultInfo = info;
-    this.info.data.forEach((v, i) => {
-      v.id = i + 1;
-    });
+    console.log("this.info.data", this.info.data);
+    if (this.info.data.length > 0) {
+      const data = this.info.data;
+      delete this.info.data;
+      const info = Object.assign(this.info, this.defaultInfo);
+      info.data = data;
+      this.defaultInfo = info;
+      this.info.data.forEach((v, i) => {
+        v.code = i + 1;
+      });
+    }
   },
   mounted() {
     this.startInterval();
   },
-  watch: {},
+  watch: {
+    info(val) {
+      console.log("val", val);
+      this.defaultInfo.data = val;
+    },
+  },
   methods: {
     // 开始动画
     startInterval() {
@@ -72,7 +87,7 @@ export default {
           const list = [...this.defaultInfo.data];
           list.push(list.shift());
           this.defaultInfo.data = list;
-          this.defaultInfo = {...this.defaultInfo}
+          this.defaultInfo = { ...this.defaultInfo };
         };
         this.timer = setInterval(() => {
           scroll();
@@ -125,6 +140,6 @@ export default {
   }
 }
 .slide-leave-active {
-  animation: noticeScroll 1 .3s forwards;
+  animation: noticeScroll 1 0.3s forwards;
 }
 </style>

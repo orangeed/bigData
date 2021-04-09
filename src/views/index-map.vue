@@ -4,12 +4,14 @@
     <dv-full-screen-container>
       <dv-loading v-if="loading">Loading...</dv-loading>
       <div v-else class="bgmap">
-        <!-- 高得地图 -->
+        <!-- 高德地图 -->
         <dataMap
           :re-contry="reContry"
           @jinwei="jinwei"
           @cabinet="cabinet"
           :position="positionInfo"
+          :adcode="adcode"
+          :whichClick="$store.getters.whichClick"
         />
         <!-- 百度地图 -->
         <!-- <dataMapBaidu
@@ -31,7 +33,7 @@
           :class="!$store.getters.nationwide ? 'fadein left' : 'fadeout left'"
           v-show="!$store.getters.nationwide"
         >
-          <left />
+          <left @enterMap="enterMap" />
         </div>
         <!-- 底部数据统计 -->
         <div
@@ -43,14 +45,14 @@
           <bottom />
         </div>
         <!-- 省市区头部展示数据 -->
-        <div
+        <!-- <div
           :class="
             $store.getters.nationwide ? 'fadein pro-title' : 'fadeout pro-title'
           "
           v-show="$store.getters.nationwide"
         >
           <proTitle />
-        </div>
+        </div> -->
         <!-- 右边展示信息 -->
         <div
           class="right"
@@ -106,10 +108,11 @@
           v-show="$store.getters.showModuleOptions"
         />
         <!-- 首页展示的设备基本信息 -->
+        <!-- v-show="!$store.getters.nationwide" -->
         <indexNationWide
           class="nationwide fadein"
-          v-show="!$store.getters.nationwide"
           @returnCountry="returnCountry"
+          v-show="!$store.getters.isErrorDetails"
         />
         <!-- 按钮 -->
         <div class="btn-grounp">
@@ -120,6 +123,15 @@
             @click="changeModuleOptions"
           >
             选择展示项
+          </div>
+          <div
+            class="jinggao"
+            v-show="!$store.getters.nationwide"
+            @click="showError"
+          >
+            设备异常表
+            <!-- <svgIcon icon-style="icon" icon-class="icon-jinggao" />
+            <span class="error-number">50</span> -->
           </div>
         </div>
       </div>
@@ -152,6 +164,7 @@ export default {
       info: {},
       cabinetInfo: {},
       positionInfo: [],
+      adcode: "", //区域编码
     };
   },
   computed: {},
@@ -166,6 +179,9 @@ export default {
     returnCountry(val) {
       // console.log(val);
       // this.reContry = val
+      if (this.$store.getters.adcode == 100000) {
+        return false;
+      }
       this.reContry = true;
       setTimeout(() => {
         this.reContry = false;
@@ -194,6 +210,22 @@ export default {
       }
       this.$store.commit("SET_SHOWMODULEOPTIONS", true);
     },
+    // 点击省份单位数量统计进入地图
+    enterMap(val) {
+      // alert(`这个是省市区的排名的点击事件${JSON.stringify(val)}`);
+      this.adcode = val.adcode;
+      // this.$store.commit("SET_ERRORDETAILS", true);
+      // this.position()
+    },
+    // 显示异常设备信息
+    showError() {
+      const showErrorTable = this.$store.getters.showErrorTable;
+      if (showErrorTable) {
+        this.$store.commit("SET_SHOWERRORTABLE", false);
+        return;
+      }
+      this.$store.commit("SET_SHOWERRORTABLE", true);
+    },
   },
   components: {
     top,
@@ -216,6 +248,7 @@ export default {
 
 <style scoped lang="scss">
 @import "../style/color.scss";
+
 #data-view {
   width: 100%;
   height: 100%;
@@ -309,6 +342,19 @@ export default {
         background-image: url("../assets/border/2/2_23.png") !important;
         top: 160px !important;
       }
+      .jinggao {
+        @extend .btn;
+        // background: none !important;
+        background-image: url("../assets/border/2/2_23.png") !important;
+
+        top: 220px !important;
+        // font-size: 40px;
+        .error-number {
+          // font-size: 20px;
+          margin-top: 10px;
+          color: $color-error;
+        }
+      }
       .nationwide {
         position: absolute;
         top: 8%;
@@ -348,7 +394,7 @@ export default {
         position: absolute;
         top: 0;
         left: 0;
-        transform: translate(57%, 40%);
+        transform: translate(62%, 40%);
         // top: calc(50% - 400px);
         // left: calc(50% - 100px);
       }

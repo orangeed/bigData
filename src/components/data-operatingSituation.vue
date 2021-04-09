@@ -21,6 +21,7 @@
 
 <script>
 import echarts from "echarts/lib/echarts";
+import { deviceDrawerOp } from "../api/deviceStatistics";
 
 export default {
   props: {},
@@ -109,18 +110,41 @@ export default {
         // right: "3%", //距离右边距
         bottom: "0%", //距离下边距
       },
-
       chartData: {
         rows: [{ 次数: 1393 }, { 次数: 3530 }, { 次数: 2923 }],
       },
+      adcode: this.$store.getters.adcode,
+      timer: null,
     };
   },
   computed: {},
-  created() {},
+  created() {
+    this.timer = setInterval(() => {
+      this.deviceDrawerOp();
+    }, this.$store.getters.timer);
+  },
   mounted() {},
   watch: {},
-  methods: {},
+  methods: {
+    deviceDrawerOp() {
+      deviceDrawerOp({ area: this.adcode }).then((res) => {
+        if (res.code === 0 && res.result.list != null) {
+          this.chartData.rows = [];
+          this.yAxis[0].data.forEach((v) => {
+            res.result.list.forEach((item) => {
+              if (v == item.name) {
+                this.chartData.rows.push({ 次数: item.value });
+              }
+            });
+          });
+        }
+      });
+    },
+  },
   components: {},
+  destroyed() {
+    clearInterval(this.timer);
+  },
 };
 </script>
 

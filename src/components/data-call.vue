@@ -4,7 +4,6 @@
     <div class="title-new">
       <span class="title-new-bg">催缴</span>
     </div>
-    <!-- <div class="title">省份单位数量统计</div> -->
     <div class="call-item">
       <carouselRanking
         :carouselRanking="provincialData"
@@ -19,6 +18,7 @@
 
 <script>
 import carouselRanking from "@/components/carouselRanking/data-carouselRanking.vue";
+import { call } from "../api/call";
 
 export default {
   props: {},
@@ -47,22 +47,6 @@ export default {
             name: "新乡",
             value: 234,
           },
-          {
-            name: "信阳",
-            value: 1234,
-          },
-          {
-            name: "漯河",
-            value: 29,
-          },
-          {
-            name: "新乡",
-            value: 56456,
-          },
-          {
-            name: "信阳",
-            value: 4574,
-          },
         ],
         fontSize: "14px",
         minHeight: "34px",
@@ -71,14 +55,33 @@ export default {
         margin: "4px 0px",
         innerBackgroundColor: "#F7931E",
       },
+      adcode: this.$store.getters.adcode,
+      timer: null,
     };
   },
   computed: {},
-  created() {},
+  created() {
+    this.timer = setInterval(() => {
+      this.call();
+    }, this.$store.getters.timer);
+  },
   mounted() {},
   watch: {},
-  methods: {},
+  methods: {
+    call() {
+      console.log('call',this.adcode);
+      call({ area: this.adcode }).then((res) => {
+        if (res.code === 0 && res.result.list != null) {
+          this.provincialData.data = [];
+          this.provincialData.data = res.result.list;
+        }
+      });
+    },
+  },
   components: { carouselRanking },
+  destroyed() {
+    clearInterval(this.timer);
+  },
 };
 </script>
 

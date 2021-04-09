@@ -12,13 +12,13 @@
       </div>
       <!-- <dv-border-box-8 class="first-info" :dur="10"> -->
       <div class="first-info">
-        <div class="bg-ligra bg-round" style="margin-bottom:2px">
+        <div class="bg-ligra bg-round" style="margin-bottom: 2px">
           <div>
             <p
               class="center"
-              style="font-size:14px;padding:10px 0px 10px 0;margin:0px"
+              style="font-size: 14px; padding: 10px 0px 10px 0; margin: 0px"
             >
-              单位总数(个)
+              激活单位总数(个)
             </p>
 
             <number
@@ -30,23 +30,23 @@
           </div>
           <div class="unitInfo">
             <div class="unitInfo-left">
-              <p class="center" style="font-size:14px">待激活单位总数(个)</p>
+              <p class="center" style="font-size: 14px">异常单位数量(个)</p>
               <number
                 :textColor="waitNumber"
                 :startVal="waitNumber.startVal"
                 :endVal="waitNumber.endVal"
                 :duration="3000"
-                style="padding-bottom:10px"
+                style="padding-bottom: 10px"
               />
             </div>
             <div class="unitInfo-right">
-              <p class="center" style="font-size:14px">已激活单位总数(个)</p>
+              <p class="center" style="font-size: 14px">新增激活单位数量(个)</p>
               <number
                 :textColor="activationNumber"
                 :startVal="activationNumber.startVal"
                 :endVal="activationNumber.endVal"
                 :duration="3000"
-                style="padding-bottom:10px"
+                style="padding-bottom: 10px"
               />
             </div>
           </div>
@@ -57,7 +57,10 @@
     <!-- 省份单位数量统计 -->
     <div
       class="fadein provincial transition"
-      v-show="$store.getters.moduleOptions.unitStatisticsRannking"
+      v-show="
+        $store.getters.moduleOptions.unitStatisticsRannking ||
+        provincialData.data.length > 0
+      "
     >
       <div class="title-new">
         <span class="title-new-bg">省份单位数量统计</span>
@@ -96,28 +99,38 @@
 import notice from "@/components/data-notice.vue";
 import number from "@/components/number/data-number.vue";
 import carouselRanking from "@/components/carouselRanking/data-carouselRanking.vue";
+import {
+  unitStatistics,
+  provinceCityStatistics,
+  realTimeUnitActivation,
+} from "../api/unitStatistics";
+import { realTimeDeviceActivation } from "../api/deviceStatistics";
 
 export default {
-  props: {},
+  props: {
+    // enterMap: {
+    //   type: Function,
+    // },
+  },
   data() {
     return {
-      // 单位总数
+      // 激活单位总数
       totalNumber: {
         color: "#3FA9F5",
         startVal: 0,
-        endVal: 12344567,
+        endVal: 0,
       },
-      // 待激活单位总数
+      // 异常单位数量
       waitNumber: {
         color: "#00FFFF",
         startVal: 0,
-        endVal: 200,
+        endVal: 0,
       },
-      // 已激活单位总数
+      // 新增激活单位数量
       activationNumber: {
         color: "#00FFFF",
         startVal: 0,
-        endVal: 200,
+        endVal: 0,
       },
       // 省份单位数量统计
       provincialData: {
@@ -125,54 +138,67 @@ export default {
           {
             name: "周口",
             value: 111,
+            adcode: "330000",
           },
           {
             name: "南阳",
             value: 777,
+            adcode: "330000",
           },
           {
             name: "西峡",
             value: 4545,
+            adcode: "330000",
           },
           {
             name: "驻马店",
             value: 788,
+            adcode: "330000",
           },
           {
             name: "新乡",
             value: 234,
+            adcode: "330000",
           },
           {
             name: "信阳",
             value: 1234,
+            adcode: "330000",
           },
           {
             name: "漯河",
             value: 29,
+            adcode: "330000",
           },
           {
             name: "新乡",
             value: 56456,
+            adcode: "330000",
           },
           {
             name: "信阳",
             value: 4574,
+            adcode: "330000",
           },
           {
             name: "漯河1",
             value: 44231,
+            adcode: "330000",
           },
           {
             name: "南阳",
             value: 120,
+            adcode: "330000",
           },
           {
             name: "西峡1",
             value: 12022,
+            adcode: "330000",
           },
           {
             name: "驻马店1",
             value: 63411,
+            adcode: "330000",
           },
         ],
         fontSize: "14px",
@@ -182,82 +208,127 @@ export default {
       },
       // 实时柜子信息
       noticeInfo: {
-        data: [
-          {
-            state: 0,
-            info: "杭州市教育局的迷你型柜子被激活了。",
-          },
-          {
-            state: 1,
-            info: "222",
-          },
-          {
-            state: 0,
-            info: "杭州市第一高级中学的迷你型柜子被激活了。",
-          },
-          {
-            state: 0,
-            info: "333",
-          },
-          {
-            state: 0,
-            info: "444",
-          },
-        ],
+        data: [],
       },
       // 实时单位激活信息
       unitInfo: {
         data: [
-          {
-            state: 0,
-            info: "杭州市高级中学被激活了。",
-          },
-          {
-            state: 1,
-            info: "杭州市第三人民医院被激活了。",
-          },
-          {
-            state: 0,
-            info: "222",
-          },
-          {
-            state: 1,
-            info: "333",
-          },
-          {
-            state: 0,
-            info: "444",
-          },
-          {
-            state: 1,
-            info: "555",
-          },
-          {
-            state: 0,
-            info: "666",
-          },
+          // {
+          //   code: 0,
+          //   unitName: "杭州市高级中学",
+          //   time: "2020-03-23",
+          // },
+          // {
+          //   code: 1,
+          //   unitName: "杭州市高级中学1",
+          //   time: "2020-03-23",
+          // },
+          // {
+          //   code: 2,
+          //   unitName: "杭州市高级中学2",
+          //   time: "2020-03-23",
+          // },
+          // {
+          //   code: 3,
+          //   unitName: "杭州市高级中学3",
+          //   time: "2020-03-23",
+          // },
+          // {
+          //   code: 4,
+          //   unitName: "杭州市高级中学4",
+          //   time: "2020-03-23",
+          // },
+          // {
+          //   code: 5,
+          //   unitName: "杭州市高级中学5",
+          //   time: "2020-03-23",
+          // },
+          // {
+          //   code: 6,
+          //   unitName: "杭州市高级中学6",
+          //   time: "2020-03-23",
+          // },
+          // {
+          //   code: 7,
+          //   unitName: "杭州市高级中学7",
+          //   time: "2020-03-23",
+          // },
         ],
       },
+      adcode: this.$store.getters.adcode,
+      timer: null,
     };
   },
   computed: {},
-  created() {},
+  created() {
+    // this.deviceStatistics();
+    this.init();
+  },
   mounted() {
-    setInterval(() => {
-      this.waitNumber.startVal = this.waitNumber.endVal;
-      this.waitNumber.endVal += 1;
-      this.activationNumber.startVal = this.activationNumber.endVal;
-      this.activationNumber.endVal += 1;
-    }, 1000);
+    this.timer = setInterval(() => {
+      this.init();
+    }, this.$store.getters.timer);
   },
   watch: {},
   methods: {
     rowClick(val) {
       console.log(val);
-      alert(`这个是省市区的排名的点击事件${JSON.stringify(val)}`);
+      // this.enterMap();
+      this.$emit("enterMap", val);
+      // alert(`这个是省市区的排名的点击事件${JSON.stringify(val)}`);
+    },
+    // 初始化函数
+    init() {
+      this.deviceStatistics();
+      this.provinceCityStatistics();
+      this.realTimeUnitActivation();
+      this.realTimeDeviceActivation();
+    },
+    // 单位统计信息
+    deviceStatistics() {
+      unitStatistics({ area: this.adcode }).then((res) => {
+        if (res.code === 0) {
+          this.totalNumber.endVal = res.result.unitTotalNumber;
+          this.waitNumber.endVal = res.result.unitWaitNumber;
+          this.activationNumber.endVal = res.result.unitAlreadyNumber;
+        }
+      });
+    },
+    // 省份或者城市单位数量统计
+    provinceCityStatistics() {
+      provinceCityStatistics({ area: this.adcode }).then((res) => {
+        if (res.code === 0 && res.result.list != null) {
+          this.provincialData.data = res.result.list;
+        }
+      });
+    },
+    // 获取实时激活单位信息
+    realTimeUnitActivation() {
+      realTimeUnitActivation({ area: this.adcode }).then((res) => {
+        if (res.code === 0 && res.result.list != null) {
+          this.unitInfo.data = res.result.list;
+        }
+      });
+    },
+    // 实施设备激活信息
+    realTimeDeviceActivation() {
+      realTimeDeviceActivation({ area: this.adcode }).then((res) => {
+        // console.log("realTimeDeviceActivation", res);
+        if (res.code === 0 && res.result.list != null) {
+          this.noticeInfo.data = res.result.list;
+        }
+        // this.noticeInfo.data = {
+        //   code: 0,
+        //   unitName: "杭州市高级中学",
+        //   time: "2020-03-23",
+        // };
+      });
     },
   },
   components: { notice, number, carouselRanking },
+  destroyed() {
+    clearInterval(this.timer);
+  },
 };
 </script>
 

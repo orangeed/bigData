@@ -58,10 +58,13 @@ export default {
         equipmentOnline: 4154,
         equipmentErr: 4548,
       },
+      adcode: this.$store.getters.adcode,
     };
   },
   computed: {},
-  created() {},
+  created() {
+   
+  },
   mounted() {},
   watch: {},
   methods: {
@@ -73,6 +76,7 @@ export default {
       }
       this.$store.commit("SET_SHOWERRORTABLE", true);
     },
+    
   },
   components: {},
 };

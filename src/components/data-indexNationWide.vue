@@ -5,27 +5,34 @@
       <div class="el-title">
         <p>设备统计信息</p>
       </div>
-      <div class="nationwide-info-item bg-ligra">
+      <button
+        class="nationwide-info-item bg-ligra"
+        ref="equipmentAll"
+        @click="showEquipmentAll"
+      >
         <p class="nationwide-info-item-title ">设备数量</p>
         <p class="nationwide-info-item-num blue ">
           {{ totalNum.equipmentAll }}
         </p>
-      </div>
-
-      <div class="nationwide-info-item bg-ligra">
+      </button>
+      <button
+        class="nationwide-info-item bg-ligra"
+        ref="equipmentOnline"
+        @click="showEquipmentOnline"
+      >
         <p class="nationwide-info-item-title ">设备实时在线量</p>
         <p class="nationwide-info-item-num text1">
           {{ totalNum.equipmentOnline }}
         </p>
-      </div>
+      </button>
 
-      <div class="nationwide-info-item bg-ligra">
+      <div class="nationwide-info-item bg-ligra" style="cursor:default">
         <p class="nationwide-info-item-title ">设备在线率</p>
         <p class="nationwide-info-item-num text1">
-          100%
+          {{ totalNum.equipmentOnlineRate }}
         </p>
       </div>
-      <div
+      <!-- <div
         :class="
           $store.getters.showErrorTable
             ? 'nationwide-info-item bg-ligra border'
@@ -33,17 +40,22 @@
         "
         style="cursor: pointer;"
         @click="showError"
+      > -->
+      <button
+        class="nationwide-info-item bg-ligra"
+        ref="error"
+        @click="showError"
       >
         <p class="nationwide-info-item-title ">设备异常量</p>
         <p class="nationwide-info-item-num danger">
           {{ totalNum.equipmentErr }}
         </p>
-        <img
+        <!-- <img
           v-show="$store.getters.showErrorTable"
           src="../assets/border/2/2_68.png"
           alt=""
-        />
-      </div>
+        /> -->
+      </button>
     </div>
     <!-- <div class="btn-grounp">
       <button class="btn" @click="returnCountry">返回全国</button>
@@ -55,6 +67,9 @@
 </template>
 
 <script>
+import { deviceStatistics } from "../api/deviceStatistics";
+import number from "@/components/number/data-number.vue";
+
 export default {
   props: {},
   data() {
@@ -62,13 +77,20 @@ export default {
       totalNum: {
         equipmentAll: 234567893,
         equipmentOnline: 4154,
+        equipmentOnlineRate: 0,
         equipmentErr: 4548,
         reContry: true,
       },
+      adcode: this.$store.getters.adcode,
+      timer: null,
     };
   },
   computed: {},
-  created() {},
+  created() {
+    this.timer = setInterval(() => {
+      this.deviceStatistics();
+    }, this.$store.getters.timer);
+  },
   mounted() {},
   watch: {},
   methods: {
@@ -89,17 +111,54 @@ export default {
       }
       this.$store.commit("SET_SHOWMODULEOPTIONS", true);
     },
-    // 显示异常设备信息
+    // 显示设备总量热力图
+    showEquipmentAll() {
+      this.handleChangeBorderColor("equipmentAll");
+      this.$refs.equipmentOnline.style.border = "";
+      this.$refs.error.style.border = "";
+      this.$store.commit("SET_WHICHCLICK", 1);
+    },
+    // 显示设备在线量热力图
+    showEquipmentOnline() {
+      this.handleChangeBorderColor("equipmentOnline");
+      this.$refs.equipmentAll.style.border = "";
+      this.$refs.error.style.border = "";
+      this.$store.commit("SET_WHICHCLICK", 2);
+    },
+    // 显示异常设备热力图
     showError() {
-      const showErrorTable = this.$store.getters.showErrorTable;
-      if (showErrorTable) {
-        this.$store.commit("SET_SHOWERRORTABLE", false);
-        return;
+      this.handleChangeBorderColor("error");
+      this.$refs.equipmentOnline.style.border = "";
+      this.$refs.equipmentAll.style.border = "";
+      this.$store.commit("SET_WHICHCLICK", 3);
+    },
+    // 改变点击过后的边框颜色
+    handleChangeBorderColor(ref) {
+      const changeBorderColor = this.$refs[ref].style;
+      if (changeBorderColor.border == "") {
+        changeBorderColor.border = "1px orange solid";
+      } else {
+        changeBorderColor.border = "";
       }
-      this.$store.commit("SET_SHOWERRORTABLE", true);
+    },
+    // 获取设备统计信息
+    deviceStatistics() {
+      deviceStatistics({ area: this.adcode }).then((res) => {
+        if (res.code === 0) {
+          this.totalNum = {
+            equipmentAll: res.result.equipmentQuantity,
+            equipmentOnline: res.result.onlineDevicesNumber,
+            equipmentOnlineRate: res.result.equipmentOnlineRate,
+            equipmentErr: res.result.equipmentAbnormality,
+          };
+        }
+      });
     },
   },
-  components: {},
+  components: { number },
+  destroyed() {
+    clearInterval(this.timer);
+  },
 };
 </script>
 
@@ -143,6 +202,10 @@ export default {
       align-items: center;
       flex-direction: column;
       position: relative;
+      outline: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
       .nationwide-info-item-title {
         font-size: 14px;
         font-weight: 600;

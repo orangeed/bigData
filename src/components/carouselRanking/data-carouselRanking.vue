@@ -1,8 +1,12 @@
 <!-- 轮播排名 -->
 <template>
   <!-- <div class="bg-ligra bg-round"> -->
-  <div id="carouselRanking"  class="bg-ligra bg-round">
-    <div @mouseenter="mouseenter" @mouseleave="mouseleave">
+  <div id="carouselRanking" class="bg-ligra bg-round">
+    <div
+      @mouseenter="mouseenter"
+      @mouseleave="mouseleave"
+      v-if="newCarouselRanking.data.length > 0"
+    >
       <div
         v-for="(item, index) in newCarouselRanking.data"
         :key="item.id"
@@ -20,7 +24,7 @@
             <p class="top">
               <span class="flex-left">
                 No.{{ item.id }}
-                <span style="margin-left:10px">{{ item.name }}</span>
+                <span style="margin-left: 10px">{{ item.name }}</span>
               </span>
               <span class="flex-right">{{ item.value | numberFilter }}</span>
             </p>
@@ -49,17 +53,10 @@ import { sortObjectArray } from "../../utils/utils";
 export default {
   filters: {
     numberFilter(val) {
-      const numbers = val
-        .toString()
-        .split("")
-        .reverse();
+      const numbers = val.toString().split("").reverse();
       const segs = [];
       while (numbers.length) segs.push(numbers.splice(0, 3).join(""));
-      return segs
-        .join(",")
-        .split("")
-        .reverse()
-        .join("");
+      return segs.join(",").split("").reverse().join("");
     },
   },
   props: {
@@ -92,26 +89,37 @@ export default {
   },
   computed: {},
   created() {
-    const data = this.carouselRanking.data;
-    delete this.carouselRanking.data;
-    const carouselRanking = Object.assign(
-      this.newCarouselRanking,
-      this.carouselRanking
-    );
-    carouselRanking.data = data;
-    this.newCarouselRanking = carouselRanking;
-    this.newCarouselRanking.data = sortObjectArray(
-      this.newCarouselRanking.data
-    );
-    this.firstNum = this.newCarouselRanking.data[0].value;
-    this.newCarouselRanking.data.forEach((v, i) => {
-      v.id = i + 1;
-    });
+    if (this.carouselRanking.data.length > 0) {
+      const data = this.carouselRanking.data;
+      delete this.carouselRanking.data;
+      const carouselRanking = Object.assign(
+        this.newCarouselRanking,
+        this.carouselRanking
+      );
+      carouselRanking.data = data;
+      this.newCarouselRanking = carouselRanking;
+      this.newCarouselRanking.data = sortObjectArray(
+        this.newCarouselRanking.data
+      );
+      this.firstNum = this.newCarouselRanking.data[0].value;
+      this.newCarouselRanking.data.forEach((v, i) => {
+        v.id = i + 1;
+      });
+    }
   },
   mounted() {
     this.startInterval();
   },
-  watch: {},
+  watch: {
+    carouselRanking: {
+      handler(val) {
+        console.log("val", val);
+        this.newCarouselRanking.data = [...val.data];
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   methods: {
     // 开始动画
     startInterval() {
@@ -192,7 +200,7 @@ export default {
     height: 46px;
     transition: all 0.3s;
     padding: 0px 16px;
-    
+
     // padding: 32px;
     &:hover {
       background-color: rgba(0, 0, 0, 0.8);

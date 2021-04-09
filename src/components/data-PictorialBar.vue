@@ -17,14 +17,37 @@
 
 <script>
 import echarts from "echarts/lib/echarts";
+import { deviceDrawerState } from "../api/deviceStatistics";
 
 export default {
   props: {},
   data() {
-    return {};
+    return {
+      adcode: this.$store.getters.adcode,
+      pictorialBar: [
+        {
+          name: "抽屉总数",
+          value: 10000,
+        },
+        {
+          name: "开通抽屉数量",
+          value: 8000,
+        },
+        {
+          name: "故障抽屉数量",
+          value: 5000,
+        },
+      ],
+      nameData: ["抽屉总数", "开通抽屉数量", "故障抽屉数量"],
+      timer: null,
+    };
   },
   computed: {},
-  created() {},
+  created() {
+    this.timer = setInterval(() => {
+      this.deviceDrawerState();
+    }, this.$store.getters.timer);
+  },
   mounted() {
     this.init();
   },
@@ -59,12 +82,13 @@ export default {
         },
       };
 
-      const option = {
+      let option = {
         // title: {
         //   text: "Vehicles in X City",
         // },
         legend: {
-          data: ["抽屉总数", "开通抽屉数量", "故障抽屉数量"],
+          // data: ["抽屉总数", "开通抽屉数量", "故障抽屉数量"],
+          data: this.nameData,
           // 文字颜色
           textStyle: {
             color: "#fff",
@@ -110,7 +134,7 @@ export default {
         },
         series: [
           {
-            name: "抽屉总数",
+            name: this.pictorialBar[0].name,
             type: "pictorialBar",
             // 右边的标签
             // label: labelSetting,
@@ -141,13 +165,13 @@ export default {
             symbolOffset: [-20, -10],
             data: [
               {
-                value: 10000,
+                value: this.pictorialBar[0].value,
                 symbol: pathSymbols.reindeer,
               },
             ],
           },
           {
-            name: "开通抽屉数量",
+            name: this.pictorialBar[1].name,
             type: "pictorialBar",
             barGap: "30%",
             // 右边的标签
@@ -172,17 +196,13 @@ export default {
             symbolOffset: [-20, 15],
             data: [
               {
-                value: 8000,
+                value: this.pictorialBar[1].value,
                 symbol: pathSymbols.reindeer,
-
-                // itemStyle:{
-
-                // }
               },
             ],
           },
           {
-            name: "故障抽屉数量",
+            name: this.pictorialBar[2].name,
             type: "pictorialBar",
             barGap: "30%",
             // 右边的标签
@@ -207,7 +227,7 @@ export default {
             symbolOffset: [-20, 40],
             data: [
               {
-                value: 100,
+                value: this.pictorialBar[2].value,
                 symbol: pathSymbols.reindeer,
                 // symbolOffset: [0, 10],
               },
@@ -217,8 +237,23 @@ export default {
       };
       myChart.setOption(option);
     },
+    // 设备抽屉状态
+    deviceDrawerState() {
+      deviceDrawerState({ area: this.adcode }).then((res) => {
+        if (res.code === 0 && res.result.list != null) {
+          this.pictorialBar = [...res.result.list];
+          this.nameData = [];
+          res.result.list.forEach((v) => {
+            this.nameData.push(v.name);
+          });
+        }
+      });
+    },
   },
   components: {},
+  destroyed() {
+    clearInterval(this.timer);
+  },
 };
 </script>
 

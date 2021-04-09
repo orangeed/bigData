@@ -1,6 +1,15 @@
 <!-- 卡片 -->
 <template>
   <div id="card">
+    <div
+      class="bgc bg-ligra bg-round errorInfo"
+      v-if="$store.getters.isErrorDetails && info.errorInfo"
+    >
+      <p>
+        <span>设备异常原因：</span>
+        <span class="danger">{{ info.errorInfo }}</span>
+      </p>
+    </div>
     <div v-if="info.unitName" class="card-item bg-ligra bg-round">
       <p>单位名称：{{ info.unitName }}</p>
       <p>单位地址：{{ info.address }}</p>
@@ -58,6 +67,22 @@ export default {
     p {
       margin: 10px 0px;
     }
+  }
+  .errorInfo {
+    width: 355px !important;
+    height: 127px;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: hidden; /*这个参数根据需要来决定要不要*/
+    padding: 0px 10px;
+    display: flex;
+    align-items: center;
+  }
+  .bgc {
+    background-color: rgba(0, 20, 33, 0.8);
+    display: flex;
+    width: 100%;
+    margin: -8px 0px;
   }
 }
 </style>

@@ -1,0 +1,694 @@
+swagger: "2.0"
+info:
+  description: "大数据展示平台"
+  version: "1.0.0"
+  title: "大数据展示平台的接口文档"
+
+# host: "183.134.197.66:13027"
+basePath: "/bigData"
+tags:
+  - name: "deviceStatistics"
+    description: "设备信息"
+  - name: "unitStatistics"
+    description: "单位信息"
+  - name: "activation"
+    description: "激活统计信息"
+  - name: "call"
+    description: "催缴"
+  - name: point
+    description: 点位信息
+  - name: heatMap
+    description: 热力图
+
+
+schemes:
+  - "http"
+
+paths:
+  # 设备统计信息
+  /deviceStatistics:
+    get:
+      tags:
+        - deviceStatistics
+      summary: "设备统计信息"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/deviceStatisticsInfo"
+  # 实时设备激活信息
+  /realTimeDeviceActivation:
+    get:
+      tags:
+        - deviceStatistics
+      summary: "实时设备激活信息"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/realTimeUnitActivation"
+  # 设备异常信息
+  /deviceErrorInfo:
+    get:
+      tags:
+        - deviceStatistics
+      summary: "设备异常统计信息，暂时不做"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        # - name: "city"
+        #   in: query
+        #   description: 1.全国，2.省份，如浙江省，3.城市，如杭州市，4.市区，如江干区
+        #   type: string
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/deviceErrorInfo"
+  # 设备类型信息
+  /deviceTypeInfo:
+    get:
+      tags:
+        - deviceStatistics
+      summary: "设备类型统计信息"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/deviceTypeInfo"
+  # 设备抽屉状态
+  /deviceDrawerState:
+    get:
+      tags:
+        - deviceStatistics
+      summary: "设备抽屉状态"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/deviceDrawerState"
+  # 抽屉操作情况
+  /deviceDrawerOp:
+    get:
+      tags:
+        - deviceStatistics
+      summary: "抽屉操作情况"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/deviceDrawerOp"
+
+
+    
+
+  # 单位统计信息
+  /unitStatistics:
+    get:
+      tags:
+        - unitStatistics
+      summary: "单位数单位统计信息量"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/unitStatistics"
+  # 省份或者城市单位数量统计
+  /provinceCityStatistics:
+    get:
+      tags:
+        - unitStatistics
+      summary: "省份或者城市单位数量统计"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+        # - name: "city"
+        #   in: "query"
+        #   description: "输入全国，查询全国的省份，输入省份，查询该省的城市。比如输入浙江省，结果为杭州市，宁波市等等"
+        #   type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/provinceCityStatistics"
+  # 实时单位激活信息
+  /realTimeUnitActivation:
+    get:
+      tags:
+        - unitStatistics
+      summary: "实时单位激活信息"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/realTimeUnitActivation"
+
+  # 激活统计信息
+  /activation:
+    get:
+      tags:
+        - activation
+      summary: "激活统计信息"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/activation"
+  
+  # 催缴信息
+  /call:
+    get:
+      tags:
+        - call
+      summary: "催缴的信息统计"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/call"
+  
+  # 点位信息
+  /pointInfo:
+    get:
+      tags:
+        - point
+      summary: "点位信息，暂时不做"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/pointInfo"
+  # 查询点位的详细信息
+  /pointInfoDetal:
+    get:
+      tags:
+        - point
+      summary: "点位详细信息，暂时不做"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: id
+          in: query
+          description: 点位id
+          type: number
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/pointInfoDetal"    
+  # 设备总量热力图    
+  /heatMapDeviceAll:
+    get:
+      tags:
+        - heatMap
+      summary: 设备总量热力图
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/heatMapDeviceAll" 
+  # 设备在线量热力图
+  /heatMapDeviceOnline:
+    get:
+      tags:
+        - heatMap
+      summary: 设备在线量热力图
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/heatMapDeviceAll" 
+  # 设备异常量热力图
+  /heatMapDeviceError:
+    get:
+      tags:
+        - heatMap
+      summary: 设备异常量热力图
+      produces:
+        - "application/json"
+      parameters:
+        - name: "Access-Token"
+          in: "header"
+          description: "令牌"
+          type: "string"
+        - name: area
+          in: query
+          description: 地区（eg:1000000）
+          type: string
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: "#/definitions/heatMapDeviceAll"
+
+    
+
+
+definitions:
+  # 设备统计信息
+  deviceStatisticsInfo:
+    properties:
+      equipmentQuantity:
+        type: number
+        example: 设备总数量
+      onlineDevicesNumber:
+        type: number
+        example: 设备实时在线量
+      equipmentOnlineRate:
+        type: number
+        example: 设备在线率
+      equipmentAbnormality:
+        type: number
+        example: 设备异常量
+    type: object
+  #  设备异常信息
+  deviceErrorInfo:
+    properties:
+      total: 
+        type: number
+        example: 设备异常数量
+      list:
+        items: 
+          $ref: "#/definitions/deviceErrorInfoArray"
+  deviceErrorInfoArray:
+    properties:
+      name:
+        type: string
+        example: 设备所在的单位地区
+      unitName: 
+        type: string
+        example: 单位名称
+      address:
+        type: string
+        example: 设备所在的地址
+      errorInfo:
+        type: string
+        example: 设备异常信息
+      # latlng:
+      #   type: string
+      #   example: 所在经纬度 [120.1234,30.1234]
+      unitPrincipal:
+        type: string
+        example: 单位负责人姓名
+      contact:
+        type: string
+        example: 单位负责人联系方式
+      deviseSerialNumber:
+        type: string
+        example: 设备序列号
+      deviceType:
+        type: string
+        example: 柜子类型
+      cabinetSerialNumber:
+        type: string
+        example: 柜子序列号
+    type: object
+  # 设备类型信息
+  deviceTypeInfo:
+    properties:
+      total:
+        type: number
+        example: 类型总数
+      list:
+        items:
+          $ref: "#/definitions/deviceTypeInfoArray"
+    type: object
+  deviceTypeInfoArray:
+    properties:
+      name:
+        type: string
+        example: 设备类型名称
+      value:
+        type: string
+        example: 设备数量
+    type: object
+  # 设备抽屉状态
+  deviceDrawerState:
+    properties:
+      total:
+        type: number
+        example: 状态名称数量
+      list:
+        items:
+          $ref: "#/definitions/deviceDrawerStateArray"
+    type: object
+  deviceDrawerStateArray:
+    properties:
+      name:
+        type: string
+        example: 状态名称，抽屉总数，开通抽屉数量，故障抽屉数量
+      value:
+        type: number
+        example: 对应状态名称的数量
+    type: object
+  # 抽屉操作情况
+  deviceDrawerOp:
+    properties: 
+      total:
+        type: number
+        example: 操作情况数量
+      list:
+        items: 
+          $ref: "#/definitions/deviceDrawerOpArray"
+    type: object
+  deviceDrawerOpArray:
+    properties: 
+      name:
+        type: string
+        example: 操作情况名称，证件异常取出次数，证件取出操作次数，证件存入操作次数
+      value:
+        type: number
+        example: 对应的操作情况次数
+    type: object
+
+
+
+  # 单位统计信息
+  unitStatistics:
+    properties:
+      unitTotalNumber:
+        type: number
+        example: 单位总数
+      unitWaitNumber:
+        type: number
+        example: 待激活单位数量
+      unitAlreadyNumber:
+        type: number
+        example: 已激活单位数量
+    type: object
+  # 省份或者城市单位数量统计
+  provinceCityStatistics:
+    properties:
+      total:
+        type: number
+        example: 总数
+      list:
+        items:
+          $ref: "#/definitions/provinceCityStatisticsArray"
+    type: object
+  provinceCityStatisticsArray:
+    properties:
+      name:
+        type: string
+        example: 省份名称或者城市名称
+      value:
+        type: number
+        example: 对应的单位数量
+      adcode:
+        type: number
+        example: 省份或者城市对应的区域编码
+    type: object
+  # 实时单位激活信息
+  realTimeUnitActivation:
+    properties:
+      total:
+        type: number
+        example: 激活数量统计
+      list:
+        items: 
+          $ref: "#/definitions/realTimeUnitActivationList"
+  realTimeUnitActivationList:
+    properties:
+      code:
+        type: string
+        example: 编号
+      unitName:
+        type: string
+        example: 单位名称
+      time:
+        type: string
+        example: 激活时间
+    type: object
+  # 激活统计信息
+  activation:
+    properties:
+      total:
+        type: number
+        example: 统计的数量为12个月
+      list:
+        items:
+          $ref: "#/definitions/activationArray"
+    type: object
+  activationArray:
+    properties:
+      time:
+        type: string
+        example: 年月，例如2021-02
+      deviceRegistration:
+        type: number
+        example: 设备注册数量
+      unitRegistration:
+        type: number
+        example: 单位注册量
+    type: object
+
+  # 催缴
+  call:
+    properties: 
+      total:
+        type: number
+        example: 催缴的城市数量
+      list:
+        items: 
+          $ref: "#/definitions/callArray"
+    type: object
+  callArray:
+    properties: 
+      name: 
+        type: string
+        example: 催缴的城市名称
+      value: 
+        type: number
+        example: 催缴城市所对应的催缴数量
+    type: object
+
+  # 点位信息
+  pointInfo:
+    properties: 
+      total: 
+        type: number
+        example: 点位信息总数
+      list:
+        items: 
+          $ref: "#/definitions/pointInfoArray"
+    type: object
+  pointInfoArray:
+    properties: 
+      id:
+        type: number
+        example: 点位id
+      name:
+        type: string
+        example: 点位名称
+      latlng: 
+        type: string
+        example: 点位经纬度 [120.1234,30.1234]
+    type: object
+  # 点位的详细信息
+  pointInfoDetal:
+    properties: 
+      name:
+        type: string
+        example: 设备所在的单位地区
+      unitName: 
+        type: string
+        example: 单位名称
+      address:
+        type: string
+        example: 设备所在的地址
+      errorInfo:
+        type: string
+        example: 设备异常信息
+      # latlng:
+      #   type: string
+      #   example: 所在经纬度
+      unitPrincipal:
+        type: string
+        example: 单位负责人姓名
+      contact:
+        type: string
+        example: 单位负责人联系方式
+      deviseSerialNumber:
+        type: string
+        example: 设备序列号
+      deviceType:
+        type: string
+        example: 柜子类型
+      cabinetSerialNumber:
+        type: string
+        example: 柜子序列号
+    type: object
+  # 热力图
+  heatMapDeviceAll:
+    properties: 
+      total:
+        type: number
+        example: 总数
+      list:
+        items: 
+          $ref: '#/definitions/heatMapDeviceAllList'
+  heatMapDeviceAllList:
+    properties:
+      name:
+        type: string
+        example: 城市名称 ，eg：全国，eg：浙江省，eg：杭州市
+      latlng: 
+        type: string
+        example: 城市经纬度 [120.1234,30.1234]
+      count:
+        type: string
+        example: 数量
+    
+ 

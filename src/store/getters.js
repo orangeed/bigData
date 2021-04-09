@@ -4,6 +4,9 @@ const getters = {
     showErrorTable: state => state.app.showErrorTable,
     showModuleOptions: state => state.app.showModuleOptions,
     moduleOptions: state => state.app.moduleOptions,
-    isErrorDetails: state => state.app.isErrorDetails
+    isErrorDetails: state => state.app.isErrorDetails,
+    adcode: state => state.app.adcode,
+    timer: state => state.app.timer,
+    whichClick: state => state.app.whichClick
 }
 export default getters

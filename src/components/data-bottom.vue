@@ -27,10 +27,13 @@
 
 <script>
 import echarts from "echarts/lib/echarts";
+import { activation } from "../api/activation";
 export default {
   props: {},
   data() {
     return {
+      adcode: this.$store.getters.adcode,
+
       // 柱状图颜色
       colors: [
         new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -46,6 +49,22 @@ export default {
       chartSettings: {
         metrics: ["设备注册量", "单位注册量"],
         silent: false,
+        label: {
+          show: true,
+          // position: "outside",
+          position: [-5, -10],
+          // distance: 15,
+          align: "left",
+          verticalAlign: "middle",
+          rotate: 0,
+          color: "#fff",
+          // formatter: "{c}  {name|{a}}",
+          formatter: "{c}",
+          fontSize: 12,
+          rich: {
+            name: {},
+          },
+        },
       },
       // Y轴设置
       yAxis: [
@@ -107,6 +126,20 @@ export default {
         inactiveColor: "#676665",
         padding: [0, 0, 10, 0],
       },
+      // 柱状图的标签
+      // label: {
+      //   show: true,
+      //   position: "insideBottom",
+      //   distance: 15,
+      //   align: "left",
+      //   verticalAlign: "middle",
+      //   rotate: 90,
+      //   formatter: "{c}  {name|{a}}",
+      //   fontSize: 16,
+      //   rich: {
+      //     name: {},
+      //   },
+      // },
       // 柱状图数据
       chartData: {
         columns: ["日期", "设备注册量", "单位注册量"],
@@ -125,14 +158,39 @@ export default {
           { 日期: "2020-12", 设备注册量: 4593, 单位注册量: 4293 },
         ],
       },
+      timer: null,
     };
   },
   computed: {},
-  created() {},
+  created() {
+    this.timer = setInterval(() => {
+      this.activation();
+    }, this.$store.getters.timer);
+  },
   mounted() {},
   watch: {},
-  methods: {},
+  methods: {
+    activation() {
+      activation({ area: this.adcode }).then((res) => {
+        if (res.code === 0 && res.result.list.length > 0) {
+          this.xAxis[0].data = [];
+          this.chartData.rows = [];
+          res.result.list.forEach((v) => {
+            this.xAxis[0].data.push(v.time);
+            this.chartData.rows.push({
+              日期: v.time,
+              设备注册量: v.deviceRegistration,
+              单位注册量: v.unitRegistration,
+            });
+          });
+        }
+      });
+    },
+  },
   components: {},
+  destroyed() {
+    clearInterval(this.timer);
+  },
 };
 </script>
 

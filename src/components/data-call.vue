@@ -26,28 +26,7 @@ export default {
     return {
       // 省份单位数量统计
       provincialData: {
-        data: [
-          {
-            name: "周口",
-            value: 111,
-          },
-          {
-            name: "南阳",
-            value: 777,
-          },
-          {
-            name: "西峡",
-            value: 4545,
-          },
-          {
-            name: "驻马店",
-            value: 788,
-          },
-          {
-            name: "新乡",
-            value: 234,
-          },
-        ],
+        data: [],
         fontSize: "14px",
         minHeight: "34px",
         backgroundColor: "#f7931e4d",
@@ -62,6 +41,7 @@ export default {
   computed: {},
   created() {
     this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
       this.call();
     }, this.$store.getters.timer);
   },
@@ -69,7 +49,6 @@ export default {
   watch: {},
   methods: {
     call() {
-      console.log('call',this.adcode);
       call({ area: this.adcode }).then((res) => {
         if (res.code === 0 && res.result.list != null) {
           this.provincialData.data = [];

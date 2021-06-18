@@ -22,6 +22,7 @@
 <script>
 import echarts from "echarts/lib/echarts";
 import { deviceDrawerOp } from "../api/deviceStatistics";
+import { returnArr } from "../utils/utils";
 
 export default {
   props: {},
@@ -43,7 +44,7 @@ export default {
         itemStyle: {
           borderWidth: 10,
           normal: {
-            color: function(params) {
+            color: function (params) {
               var colorList = [
                 new echarts.graphic.LinearGradient(0, 1, 2, 0, [
                   { offset: 0, color: "#513819" },
@@ -119,7 +120,9 @@ export default {
   },
   computed: {},
   created() {
+    this.deviceDrawerOp();
     this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
       this.deviceDrawerOp();
     }, this.$store.getters.timer);
   },
@@ -130,6 +133,7 @@ export default {
       deviceDrawerOp({ area: this.adcode }).then((res) => {
         if (res.code === 0 && res.result.list != null) {
           this.chartData.rows = [];
+          this.yAxis[0].data = returnArr(res.result.list, "name");
           this.yAxis[0].data.forEach((v) => {
             res.result.list.forEach((item) => {
               if (v == item.name) {

@@ -8,7 +8,6 @@ import AMapUI from "AMapUI";
 // import echarts from "echarts";
 // import 'echarts-gl'
 
-
 import { citys } from "../utils/city.js";
 import { heatGrid } from "../utils/gard.js";
 import { heatmapLayer } from "../utils/test.js";
@@ -62,58 +61,7 @@ export default {
       index: 0,
       level: null,
       whichClickData: this.whichClick,
-      heatMapData: {
-        dataset: [
-          {
-            features: {
-              point: [
-                {
-                  coordinates: [120.22047498787455, 30.185354564274313],
-                  properties: {
-                    count: 300,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            features: {
-              point: [
-                {
-                  coordinates: [120.20570303404699, 30.232831626807425],
-                  properties: {
-                    count: 400,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            features: {
-              point: [
-                {
-                  coordinates: [120.20278947706059, 30.23329045188135],
-                  properties: {
-                    count: 500,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            features: {
-              point: [
-                {
-                  coordinates: [120.16555409045462, 30.17206096266061],
-                  properties: {
-                    count: 600,
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
+      features: [],
     };
   },
   mounted() {
@@ -171,9 +119,9 @@ export default {
             //  if (props.level === "province") {
             // 只下钻到省一级 （省：province，市：city，县：district）
             // 若是下钻到县一级，那么这个if判断就可以注释掉
-            console.log("props", props);
             this.level = props.level;
             this.$store.commit("SET_ADCODE", props.adcode);
+            console.log("adcode", this.$store.getters.adcode);
             this.switch2AreaNode(props.adcode, 0, 0, props.level);
             this.aReContry = false;
             if (props.level == "district") {
@@ -638,12 +586,13 @@ export default {
     },
     // 飞线图
     setFlyLine() {},
-    // 热力图
+    // 热力图获取数据
     setHeatmapLayer() {
       // 1.获取点击的是哪一个功能
       // let whichClick = this.$store.getters.whichClick;
       const adcode = this.$store.getters.adcode;
       // 2.获取设备数量
+      this.features = [];
       switch (this.whichClickData) {
         // 设备总量
         case 1:
@@ -651,18 +600,22 @@ export default {
           heatMapDeviceAll({ area: adcode }).then((res) => {
             if (res.code === 0 && res.result.list != null) {
               res.result.list.forEach((v) => {
-                let point = [
-                  {
-                    coordinates: v.latlng,
-                    properties: {
-                      count: v.count,
-                    },
+                let point = {
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [
+                      Number(v.latlng.split(",")[0].trim()),
+                      Number(v.latlng.split(",")[1].trim()),
+                    ],
                   },
-                ];
-                this.heatMapData.dataset.push({
-                  features: point,
-                });
+                  properties: {
+                    count: v.count,
+                  },
+                };
+                this.features.push(point);
               });
+              this.renderData();
             }
           });
           break;
@@ -672,18 +625,22 @@ export default {
           heatMapDeviceOnline({ area: adcode }).then((res) => {
             if (res.code === 0 && res.result.list != null) {
               res.result.list.forEach((v) => {
-                let point = [
-                  {
-                    coordinates: v.latlng,
-                    properties: {
-                      count: v.count,
-                    },
+                let point = {
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [
+                      Number(v.latlng.split(",")[0].trim()),
+                      Number(v.latlng.split(",")[1].trim()),
+                    ],
                   },
-                ];
-                this.heatMapData.dataset.push({
-                  features: point,
-                });
+                  properties: {
+                    count: v.count,
+                  },
+                };
+                this.features.push(point);
               });
+              this.renderData();
             }
           });
           break;
@@ -693,69 +650,75 @@ export default {
           heatMapDeviceError({ area: adcode }).then((res) => {
             if (res.code === 0 && res.result.list != null) {
               res.result.list.forEach((v) => {
-                let point = [
-                  {
-                    coordinates: v.latlng,
-                    properties: {
-                      count: v.count,
-                    },
+                let point = {
+                  type: "Feature",
+                  geometry: {
+                    type: "Point",
+                    coordinates: [
+                      Number(v.latlng.split(",")[0].trim()),
+                      Number(v.latlng.split(",")[1].trim()),
+                    ],
                   },
-                ];
-                this.heatMapData.dataset.push({
-                  features: point,
-                });
+                  properties: {
+                    count: v.count,
+                  },
+                };
+                this.features.push(point);
               });
+              this.renderData();
             }
           });
           break;
         default:
           break;
       }
-      // 当有数据时
-      if (this.heatMapData.length > 0) {
-        console.log(1111);
-        // 3.创建一个画布容器
-        var loca = new Loca.Container({
-          map: this.amap,
-        });
-
-        var geo = new Loca.GeoJSONSource({
-          url:
-            "https://a.amap.com/Loca/static/loca-v2/demos/mock_data/hz_house_order.json",
-        });
-        console.log("geo", geo);
-        var heatmap = new Loca.HeatMapLayer({
-          // loca,
-          zIndex: 10,
-          opacity: 1,
-          visible: true,
-          zooms: [2, 22],
-        });
-        // 4.渲染数据
-        heatmap.setSource(this.heatMapData, {
-          radius: 20,
-          unit: "px",
-          height: 90,
-          // radius: 10,
-          // unit: 'px',
-          // height: 10,
-          gradient: {
-            0.1: "rgba(50,48,118,1)",
-            0.2: "rgba(127,60,255,1)",
-            0.4: "rgba(166,53,219,1)",
-            0.6: "rgba(254,64,95,1)",
-            0.8: "rgba(255,98,4,1)",
-            1: "rgba(236,220,79,1)",
-          },
-          value: function (index, feature) {
-            return feature.properties.count;
-          },
-          min: 0,
-          max: 10, //4.6
-          heightBezier: [0, 0.53, 0.37, 0.98],
-        });
-        loca.add(heatmap);
+    },
+    // 热力图渲染数据
+    renderData() {
+      console.log("运行到我了！");
+      if (heatmap) {
+        heatmap.setMap(null);
       }
+      // 3.创建一个画布容器
+      let loca = new Loca.Container({
+        map: this.amap,
+      });
+      const geo = new Loca.GeoJSONSource({
+        data: {
+          type: "FeatureCollection",
+          features: this.features,
+        },
+      });
+      let heatmap = new Loca.HeatMapLayer({
+        zIndex: 10,
+        opacity: 1,
+        visible: true,
+        zooms: [2, 22],
+      });
+      // 4.渲染数据
+      heatmap.setSource(geo, {
+        radius: 20,
+        unit: "px",
+        height: 90,
+        // radius: 10,
+        // unit: 'px',
+        // height: 10,
+        gradient: {
+          0.1: "rgba(50,48,118,1)",
+          0.2: "rgba(127,60,255,1)",
+          0.4: "rgba(166,53,219,1)",
+          0.6: "rgba(254,64,95,1)",
+          0.8: "rgba(255,98,4,1)",
+          1: "rgba(236,220,79,1)",
+        },
+        value: function (index, feature) {
+          return feature.properties.count;
+        },
+        min: 0,
+        max: 10, //4.6
+        heightBezier: [0, 0.53, 0.37, 0.98],
+      });
+      loca.add(heatmap);
     },
   },
 
@@ -803,7 +766,8 @@ export default {
       // this.amap.setZoomAndCenter(20, [lat, lng]);
     },
     whichClick(val) {
-      console.log("val", val);
+      this.whichClickData = val;
+      console.log("whichClick", this.whichClick);
       if (this.level !== "district") {
         this.setHeatmapLayer();
       }

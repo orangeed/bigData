@@ -164,6 +164,7 @@ export default {
   computed: {},
   created() {
     this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
       this.activation();
     }, this.$store.getters.timer);
   },

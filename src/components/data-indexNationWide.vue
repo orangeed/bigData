@@ -1,7 +1,7 @@
 <!-- 首页展示的设备基本信息 -->
 <template>
   <div id="nationwide" v-if="$store.getters.moduleOptions.deviceStatistics">
-    <div class="nationwide-info ">
+    <div class="nationwide-info">
       <div class="el-title">
         <p>设备统计信息</p>
       </div>
@@ -10,8 +10,8 @@
         ref="equipmentAll"
         @click="showEquipmentAll"
       >
-        <p class="nationwide-info-item-title ">设备数量</p>
-        <p class="nationwide-info-item-num blue ">
+        <p class="nationwide-info-item-title">设备数量</p>
+        <p class="nationwide-info-item-num blue">
           {{ totalNum.equipmentAll }}
         </p>
       </button>
@@ -20,14 +20,14 @@
         ref="equipmentOnline"
         @click="showEquipmentOnline"
       >
-        <p class="nationwide-info-item-title ">设备实时在线量</p>
+        <p class="nationwide-info-item-title">设备实时在线量</p>
         <p class="nationwide-info-item-num text1">
           {{ totalNum.equipmentOnline }}
         </p>
       </button>
 
-      <div class="nationwide-info-item bg-ligra" style="cursor:default">
-        <p class="nationwide-info-item-title ">设备在线率</p>
+      <div class="nationwide-info-item bg-ligra" style="cursor: default">
+        <p class="nationwide-info-item-title">设备在线率</p>
         <p class="nationwide-info-item-num text1">
           {{ totalNum.equipmentOnlineRate }}
         </p>
@@ -46,7 +46,7 @@
         ref="error"
         @click="showError"
       >
-        <p class="nationwide-info-item-title ">设备异常量</p>
+        <p class="nationwide-info-item-title">设备异常量</p>
         <p class="nationwide-info-item-num danger">
           {{ totalNum.equipmentErr }}
         </p>
@@ -88,6 +88,7 @@ export default {
   computed: {},
   created() {
     this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
       this.deviceStatistics();
     }, this.$store.getters.timer);
   },

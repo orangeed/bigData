@@ -107,11 +107,7 @@ import {
 import { realTimeDeviceActivation } from "../api/deviceStatistics";
 
 export default {
-  props: {
-    // enterMap: {
-    //   type: Function,
-    // },
-  },
+  props: {},
   data() {
     return {
       // 激活单位总数
@@ -134,73 +130,74 @@ export default {
       },
       // 省份单位数量统计
       provincialData: {
-        data: [
-          {
-            name: "周口",
-            value: 111,
-            adcode: "330000",
-          },
-          {
-            name: "南阳",
-            value: 777,
-            adcode: "330000",
-          },
-          {
-            name: "西峡",
-            value: 4545,
-            adcode: "330000",
-          },
-          {
-            name: "驻马店",
-            value: 788,
-            adcode: "330000",
-          },
-          {
-            name: "新乡",
-            value: 234,
-            adcode: "330000",
-          },
-          {
-            name: "信阳",
-            value: 1234,
-            adcode: "330000",
-          },
-          {
-            name: "漯河",
-            value: 29,
-            adcode: "330000",
-          },
-          {
-            name: "新乡",
-            value: 56456,
-            adcode: "330000",
-          },
-          {
-            name: "信阳",
-            value: 4574,
-            adcode: "330000",
-          },
-          {
-            name: "漯河1",
-            value: 44231,
-            adcode: "330000",
-          },
-          {
-            name: "南阳",
-            value: 120,
-            adcode: "330000",
-          },
-          {
-            name: "西峡1",
-            value: 12022,
-            adcode: "330000",
-          },
-          {
-            name: "驻马店1",
-            value: 63411,
-            adcode: "330000",
-          },
-        ],
+        data: [],
+        // [
+        //   {
+        //     name: "周口",
+        //     value: 111,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "南阳",
+        //     value: 777,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "西峡",
+        //     value: 4545,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "驻马店",
+        //     value: 788,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "新乡",
+        //     value: 234,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "信阳",
+        //     value: 1234,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "漯河",
+        //     value: 29,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "新乡",
+        //     value: 56456,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "信阳",
+        //     value: 4574,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "漯河1",
+        //     value: 44231,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "南阳",
+        //     value: 120,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "西峡1",
+        //     value: 12022,
+        //     adcode: "330000",
+        //   },
+        //   {
+        //     name: "驻马店1",
+        //     value: 63411,
+        //     adcode: "330000",
+        //   },
+        // ],
         fontSize: "14px",
         minHeight: "34px",
         backgroundColor: "#00444c",
@@ -266,6 +263,7 @@ export default {
   },
   mounted() {
     this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
       this.init();
     }, this.$store.getters.timer);
   },

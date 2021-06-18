@@ -89,23 +89,23 @@ export default {
   },
   computed: {},
   created() {
-    if (this.carouselRanking.data.length > 0) {
-      const data = this.carouselRanking.data;
-      delete this.carouselRanking.data;
-      const carouselRanking = Object.assign(
-        this.newCarouselRanking,
-        this.carouselRanking
-      );
-      carouselRanking.data = data;
-      this.newCarouselRanking = carouselRanking;
-      this.newCarouselRanking.data = sortObjectArray(
-        this.newCarouselRanking.data
-      );
-      this.firstNum = this.newCarouselRanking.data[0].value;
-      this.newCarouselRanking.data.forEach((v, i) => {
-        v.id = i + 1;
-      });
-    }
+    // if (this.carouselRanking.data.length > 0) {
+    //   const data = this.carouselRanking.data;
+    //   delete this.carouselRanking.data;
+    //   const carouselRanking = Object.assign(
+    //     this.newCarouselRanking,
+    //     this.carouselRanking
+    //   );
+    //   carouselRanking.data = data;
+    //   this.newCarouselRanking = carouselRanking;
+    //   this.newCarouselRanking.data = sortObjectArray(
+    //     this.newCarouselRanking.data
+    //   );
+    //   this.firstNum = this.newCarouselRanking.data[0].value;
+    //   this.newCarouselRanking.data.forEach((v, i) => {
+    //     v.id = i + 1;
+    //   });
+    // }
   },
   mounted() {
     this.startInterval();
@@ -113,8 +113,24 @@ export default {
   watch: {
     carouselRanking: {
       handler(val) {
-        console.log("val", val);
         this.newCarouselRanking.data = [...val.data];
+        if (this.carouselRanking.data.length > 0) {
+          const data = this.carouselRanking.data;
+          delete this.carouselRanking.data;
+          const carouselRanking = Object.assign(
+            this.newCarouselRanking,
+            this.carouselRanking
+          );
+          carouselRanking.data = data;
+          this.newCarouselRanking = carouselRanking;
+          this.newCarouselRanking.data = sortObjectArray(
+            this.newCarouselRanking.data
+          );
+          this.firstNum = this.newCarouselRanking.data[0].value;
+          this.newCarouselRanking.data.forEach((v, i) => {
+            v.id = i + 1;
+          });
+        }
       },
       deep: true,
       immediate: true,

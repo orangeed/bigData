@@ -9,7 +9,7 @@
       <div
         ref="drawerStatus"
         class="bg-ligra bg-round"
-        style="width:100%;height:160px;margin:0 auto;margin-top:10px;"
+        style="width: 100%; height: 160px; margin: 0 auto; margin-top: 10px"
       ></div>
     </div>
   </div>
@@ -18,44 +18,35 @@
 <script>
 import echarts from "echarts/lib/echarts";
 import { deviceDrawerState } from "../api/deviceStatistics";
+import { returnArr } from "../utils/utils";
 
 export default {
   props: {},
   data() {
     return {
       adcode: this.$store.getters.adcode,
-      pictorialBar: [
-        {
-          name: "抽屉总数",
-          value: 10000,
-        },
-        {
-          name: "开通抽屉数量",
-          value: 8000,
-        },
-        {
-          name: "故障抽屉数量",
-          value: 5000,
-        },
-      ],
-      nameData: ["抽屉总数", "开通抽屉数量", "故障抽屉数量"],
+      pictorialBar: [],
+      nameData: [],
       timer: null,
     };
   },
   computed: {},
-  created() {
-    this.timer = setInterval(() => {
-      this.deviceDrawerState();
-    }, this.$store.getters.timer);
-  },
+  created() {},
   mounted() {
-    this.init();
+    this.deviceDrawerState().then(() => {
+      this.init();
+    });
+    this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
+      this.deviceDrawerState().then(() => {
+        this.init();
+      });
+    }, this.$store.getters.timer);
   },
   watch: {},
   methods: {
     init() {
       const drawerStatus = this.$refs.drawerStatus;
-      console.log("drawerStatus", drawerStatus);
       let myChart = echarts.init(drawerStatus);
       var pathSymbols = {
         reindeer:
@@ -83,9 +74,6 @@ export default {
       };
 
       let option = {
-        // title: {
-        //   text: "Vehicles in X City",
-        // },
         legend: {
           // data: ["抽屉总数", "开通抽屉数量", "故障抽屉数量"],
           data: this.nameData,
@@ -238,14 +226,13 @@ export default {
       myChart.setOption(option);
     },
     // 设备抽屉状态
-    deviceDrawerState() {
+    async deviceDrawerState() {
       deviceDrawerState({ area: this.adcode }).then((res) => {
         if (res.code === 0 && res.result.list != null) {
-          this.pictorialBar = [...res.result.list];
           this.nameData = [];
-          res.result.list.forEach((v) => {
-            this.nameData.push(v.name);
-          });
+          this.pictorialBar = [];
+          this.pictorialBar = [...res.result.list].splice(0, 3);
+          this.nameData = returnArr(res.result.list, "name").splice(0, 3);
         }
       });
     },

@@ -5,7 +5,7 @@
       <span class="title-new-bg">{{ title }}</span>
     </div>
     <div>
-      <div class="notice-info" v-if="defaultInfo.data > 0">
+      <div class="notice-info" v-if="defaultInfo.data.length > 0">
         <div
           v-for="(item, index) in defaultInfo.data"
           :key="item.code"
@@ -19,14 +19,11 @@
           </transition>
         </div>
       </div>
-      <div  class="notice-info" v-else>
+      <div class="notice-info" v-else>
         <div class="bg-ligra text1">
-          <div class="notice-info-item">
-            暂无数据
-          </div>
+          <div class="notice-info-item">暂无数据</div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -58,25 +55,40 @@ export default {
   },
   computed: {},
   created() {
-    console.log("this.info.data", this.info.data);
-    if (this.info.data.length > 0) {
-      const data = this.info.data;
-      delete this.info.data;
-      const info = Object.assign(this.info, this.defaultInfo);
-      info.data = data;
-      this.defaultInfo = info;
-      this.info.data.forEach((v, i) => {
-        v.code = i + 1;
-      });
-    }
+    // console.log("this.info.data", this.info);
+    // if (this.info.data.length > 0) {
+    //   const data = this.info.data;
+    //   delete this.info.data;
+    //   const info = Object.assign(this.info, this.defaultInfo);
+    //   info.data = data;
+    //   this.defaultInfo = info;
+    //   this.info.data.forEach((v, i) => {
+    //     v.code = i + 1;
+    //   });
+    // }
   },
   mounted() {
     this.startInterval();
   },
   watch: {
-    info(val) {
-      console.log("val", val);
-      this.defaultInfo.data = val;
+    info: {
+      handler(val) {
+        console.log("val", val);
+        this.defaultInfo.data = [...val.data];
+        if (this.info.data.length > 0) {
+          const data = this.info.data;
+          delete this.info.data;
+          const info = Object.assign(this.info, this.defaultInfo);
+          info.data = data;
+          this.defaultInfo = info;
+          this.info.data.forEach((v, i) => {
+            v.code = i + 1;
+          });
+        }
+        console.log("defaultInfo", this.defaultInfo);
+      },
+      deep: true,
+      immediate: true,
     },
   },
   methods: {

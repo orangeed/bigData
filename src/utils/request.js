@@ -3,6 +3,7 @@ import axios from 'axios'
 const service = axios.create({
     // + process.env.VUE_APP_BASE_API
     baseURL: "http://127.0.0.1:18000" + process.env.VUE_APP_BASE_API, // url = base url + request url
+    // baseURL: 'http://183.134.197.66:20002' + process.env.VUE_APP_BASE_API,
     // withCredentials: true, // send cookies when cross-domain requests
     timeout: 5000 // request timeout
 })

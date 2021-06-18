@@ -66,6 +66,7 @@ export default {
   computed: {},
   created() {
     this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
       this.deviceErrorInfo();
     }, this.$store.getters.timer);
   },

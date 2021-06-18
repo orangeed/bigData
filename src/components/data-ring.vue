@@ -5,7 +5,7 @@
     <div class="title-new">
       <span class="title-new-bg">设备类型信息</span>
     </div>
-    <div class="ring-item ">
+    <div class="ring-item">
       <ve-ring
         :data="chartData"
         :settings="chartSettings"
@@ -14,7 +14,7 @@
         height="196px"
         :colors="appcolor"
         class="bg-ligra bg-round"
-        style="margin:0 auto;"
+        style="margin: 0 auto"
       ></ve-ring>
     </div>
   </div>
@@ -150,6 +150,7 @@ export default {
   computed: {},
   created() {
     this.timer = setInterval(() => {
+      this.adcode = this.$store.getters.adcode;
       this.deviceTypeInfo();
     }, this.$store.getters.timer);
   },
